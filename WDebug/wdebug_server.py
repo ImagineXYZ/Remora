@@ -79,6 +79,10 @@ class Server(threading.Thread):
             self.sock = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
             #Se define conexión de socket hacia la IP propia del dispositivo y el puerto 9999
             self.sock.bind( ("192.168.137.1", 6660) )
+            #Default IP Windows  192.168.137.1
+            #Default IP Android  192.168.43.1
+
+            
             #Se define timeout de 5 segundos para que el cliente responda.
             self.sock.listen( 5 )
         except socket.error as err:
