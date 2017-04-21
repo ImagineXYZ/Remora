@@ -2,8 +2,15 @@
 #include <ESP8266_XYZ.h>
 #include "wiring_private.h" //pinPeripheral
 
-#define SSID F("WDebug")  //Nombre de la red a la que se desea conectar
-#define PASS F("espdebug")   //Contraseña de la red
+//#define SSID F("WDebug")  //Nombre de la red a la que se desea conectar
+//#define PASS F("espdebug")   //Contraseña de la red
+
+//#define SSID F("CarArt")  //Nombre de la red a la que se desea conectar
+//#define PASS F("puravida2016")   //Contraseña de la red
+
+#define SSID F("Javo")  //Nombre de la red a la que se desea conectar
+#define PASS F("123456789")   //Contraseña de la red
+
 #define Serial SERIAL_PORT_USBVIRTUAL
 
 Uart WSerial (&sercom1, 13, 11, SERCOM_RX_PAD_1, UART_TX_PAD_0);
