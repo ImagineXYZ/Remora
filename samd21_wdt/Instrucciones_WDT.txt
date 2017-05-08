@@ -1,7 +1,25 @@
 Instrucciones para WDT en SAMD21:
-	1. Colocar setupWDT(periodo) en la sección setup para configurar e inicializar el WDT. El argumento "periodo" debe ser un número entre cero y 11, que está asociado a la cantidad de ciclos de reloj antes de reiniciar por inactividad (ver hoja de datos, Tabla 17-5).
+	1. Colocar setupWDT(periodo) en la sección setup para configurar e inicializar el WDT. El argumento "periodo" debe ser un número entre cero y 11, que está asociado a la cantidad de ciclos de reloj antes de reiniciar por inactividad (ver tabla).
 	2. Colocar resetWDT() en cada loop para reiniciar el conteo del temporizador.
 	3. Para desactivar el WDT, utilizar disableWDT().
 	4. Para reinciar el microcontrolador por software, utilizar systemReset().
 
 IMPORTANTE: función delay no afecta comportamiento del WDT, por lo que no debe haber un delay tan grande como el temporizador del mismo.
+
+
+---------------------------------------
+	Periodo 		Timeout (aprox.)
+---------------------------------------
+	0				15,125 ms
+	1				32,25 ms
+	2				62,5 ms
+	3				125 ms
+	4				250 ms
+	5				500 ms
+	6				1 s
+	7				2 s
+	8				4 s
+	9				8 s
+	10				16 s
+	11				32 s
+---------------------------------------
