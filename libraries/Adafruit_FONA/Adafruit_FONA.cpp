@@ -837,7 +837,7 @@ uint8_t Adafruit_FONA::getGPS(uint8_t arg, char *buffer, uint8_t maxbuff) {
   return len;
 }
 
-boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed_kph, float *heading, float *altitude) {
+boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed_kph, float *heading, float *altitude, bool *run, bool *fix, uint8_t *fix_mode, float *hdop, float *pdop, float *vdop, uint8_t *gps_view, uint8_t *gns_used, uint8_t *gns_view, uint8_t *cno, float *hpa, float *vpa) {
 
   char gpsbuffer[120];
 
@@ -934,15 +934,18 @@ boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed
     // Parse 808 V2 response.  See table 2-3 from here for format:
     // http://www.adafruit.com/datasheets/SIM800%20Series_GNSS_Application%20Note%20V1.00.pdf
 
-    // skip GPS run status
+    // grap GPS run status
     char *tok = strtok(gpsbuffer, ",");
     if (! tok) return false;
+    *run = atoi(tok);
 
-    // skip fix status
+
+    // grab fix status
     tok = strtok(NULL, ",");
     if (! tok) return false;
+    *fix = atoi(tok);
 
-    // skip date
+    // grab date
     char *datep = strtok(NULL, ",");
     if (! datep) return false;
     *date = atof(datep);
@@ -979,12 +982,118 @@ boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed
     // only grab heading if needed
     if (heading != NULL) {
 
-      // grab the speed in knots
+      // grab the heading in knots
       char *coursep = strtok(NULL, ",");
       if (! coursep) return false;
 
       *heading = atof(coursep);
     }
+
+    if (fix_mode != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *fix_mode = atoi(tok);
+    }
+
+    if (fix_mode != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *fix_mode = atoi(tok);
+    }
+
+    tok = strtok(NULL, ",");
+
+    if (hdop != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *hdop = atof(tok);
+    }
+
+    if (pdop != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *pdop = atof(tok);
+    }
+
+    if (vdop != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *vdop = atof(tok);
+    }
+
+    tok = strtok(NULL, ",");
+
+    if (gps_view != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *gps_view = atoi(tok);
+    }
+
+    if (gns_used != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *gns_used = atoi(tok);
+    }
+
+    if (gns_view != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *gns_view = atoi(tok);
+    }
+
+    tok = strtok(NULL, ",");
+
+    if (cno != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *cno = atoi(tok);
+    }
+
+    if (hpa != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *hpa = atoi(tok);
+    }
+
+    if (vpa != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+
+      *vpa = atoi(tok);
+    }
+    
   }
   else {
     // Parse 808 V1 response.
