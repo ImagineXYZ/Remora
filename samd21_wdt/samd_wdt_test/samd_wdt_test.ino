@@ -10,18 +10,18 @@ static void GCLKsync() {
 
 void setup() {
   Serial.begin(115200);
-  delay(15000); //Tiempo para inicializar hardware
+  while(!Serial);
 
   Serial.println("WDT Test");
 
-  setupWDT( 11 ); //Inicialización del WDT
+  setupWDT( 9 ); //Inicialización del WDT
   
   uint32_t t0 = millis(); 
   
   while(millis() - t0 <= 25000){ //Ciclo hasta 25s o hasta reset por WDT
     
-    delay(10);
-    if( millis()- t0 <15000 ){
+    delay(100);
+    if( millis()- t0 < 15000 ){
       resetWDT();
     }
 
