@@ -36,13 +36,13 @@ CPP_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
-Quadtree \
 core/core \
 core/core/USB \
 core/core/avr \
 core/variant \
 libraries/Adafruit_FONA \
 libraries/ESP8266_XYZ \
+libraries/Quadtree \
 libraries/SD/src \
 libraries/SD/src/utility \
 libraries/SPI \

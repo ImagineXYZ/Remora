@@ -837,7 +837,7 @@ uint8_t Adafruit_FONA::getGPS(uint8_t arg, char *buffer, uint8_t maxbuff) {
   return len;
 }
 
-boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed_kph, float *heading, float *altitude) {
+boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed_kph, float *heading, float *altitude, bool *run, bool *fix, uint8_t *fix_mode, float *hdop, float *pdop, float *vdop, uint8_t *gps_view, uint8_t *gns_used, /*uint8_t *gns_view, uint8_t *cno,*/ float *hpa, float *vpa) {
 
   char gpsbuffer[120];
 
@@ -852,97 +852,24 @@ boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed
   if (res_len == 0)
     return false;
 
-  if (_type == FONA3G_A || _type == FONA3G_E) {
-    // Parse 3G respose
-    // +CGPSINFO:4043.000000,N,07400.000000,W,151015,203802.1,-12.0,0.0,0
-    // skip beginning
-    char *tok;
+  /////Eliminé todos los condicionales que involucraban otra versiones de hardware: 3G o Fona 808 V1
 
-   // grab the latitude
-    char *latp = strtok(gpsbuffer, ",");
-    if (! latp) return false;
-
-    // grab latitude direction
-    char *latdir = strtok(NULL, ",");
-    if (! latdir) return false;
-
-    // grab longitude
-    char *longp = strtok(NULL, ",");
-    if (! longp) return false;
-
-    // grab longitude direction
-    char *longdir = strtok(NULL, ",");
-    if (! longdir) return false;
-
-    // skip date & time
-    tok = strtok(NULL, ",");
-    tok = strtok(NULL, ",");
-
-   // only grab altitude if needed
-    if (altitude != NULL) {
-      // grab altitude
-      char *altp = strtok(NULL, ",");
-      if (! altp) return false;
-      *altitude = atof(altp);
-    }
-
-    // only grab speed if needed
-    if (speed_kph != NULL) {
-      // grab the speed in km/h
-      char *speedp = strtok(NULL, ",");
-      if (! speedp) return false;
-
-      *speed_kph = atof(speedp);
-    }
-
-    // only grab heading if needed
-    if (heading != NULL) {
-
-      // grab the speed in knots
-      char *coursep = strtok(NULL, ",");
-      if (! coursep) return false;
-
-      *heading = atof(coursep);
-    }
-
-    double latitude = atof(latp);
-    double longitude = atof(longp);
-
-    // convert latitude from minutes to decimal
-    float degrees = floor(latitude / 100);
-    double minutes = latitude - (100 * degrees);
-    minutes /= 60;
-    degrees += minutes;
-
-    // turn direction into + or -
-    if (latdir[0] == 'S') degrees *= -1;
-
-    *lat = degrees;
-
-    // convert longitude from minutes to decimal
-    degrees = floor(longitude / 100);
-    minutes = longitude - (100 * degrees);
-    minutes /= 60;
-    degrees += minutes;
-
-    // turn direction into + or -
-    if (longdir[0] == 'W') degrees *= -1;
-
-    *lon = degrees;
-
-  } else if (_type == FONA808_V2) {
+  if (_type == FONA808_V2) {
     // Parse 808 V2 response.  See table 2-3 from here for format:
     // http://www.adafruit.com/datasheets/SIM800%20Series_GNSS_Application%20Note%20V1.00.pdf
 
-    // skip GPS run status
+    // grap GPS run status
     char *tok = strtok(gpsbuffer, ",");
+    
     if (! tok) return false;
+    *run = atoi(tok);
 
-    // skip fix status
+    // grab fix status
     tok = strtok(NULL, ",");
     if (! tok) return false;
+    *fix = atoi(tok);
 
-    // skip date
+    // grab date
     char *datep = strtok(NULL, ",");
     if (! datep) return false;
     *date = atof(datep);
@@ -979,128 +906,87 @@ boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed
     // only grab heading if needed
     if (heading != NULL) {
 
-      // grab the speed in knots
+      // grab the heading in knots
       char *coursep = strtok(NULL, ",");
       if (! coursep) return false;
 
       *heading = atof(coursep);
     }
-  }
-  else {
-    // Parse 808 V1 response.
 
-    // skip mode
-    char *tok = strtok(gpsbuffer, ",");
-    if (! tok) return false;
+    if (fix_mode != NULL) {
 
-    // skip date
-    tok = strtok(NULL, ",");
-    if (! tok) return false;
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
 
-    // skip fix
-    tok = strtok(NULL, ",");
-    if (! tok) return false;
-
-    // grab the latitude
-    char *latp = strtok(NULL, ",");
-    if (! latp) return false;
-
-    // grab latitude direction
-    char *latdir = strtok(NULL, ",");
-    if (! latdir) return false;
-
-    // grab longitude
-    char *longp = strtok(NULL, ",");
-    if (! longp) return false;
-
-    // grab longitude direction
-    char *longdir = strtok(NULL, ",");
-    if (! longdir) return false;
-
-    double latitude = atof(latp);
-    double longitude = atof(longp);
-
-    // convert latitude from minutes to decimal
-    float degrees = floor(latitude / 100);
-    double minutes = latitude - (100 * degrees);
-    minutes /= 60;
-    degrees += minutes;
-
-    // turn direction into + or -
-    if (latdir[0] == 'S') degrees *= -1;
-
-    *lat = degrees;
-
-    // convert longitude from minutes to decimal
-    degrees = floor(longitude / 100);
-    minutes = longitude - (100 * degrees);
-    minutes /= 60;
-    degrees += minutes;
-
-    // turn direction into + or -
-    if (longdir[0] == 'W') degrees *= -1;
-
-    *lon = degrees;
-
-    // only grab speed if needed
-    if (speed_kph != NULL) {
-
-      // grab the speed in knots
-      char *speedp = strtok(NULL, ",");
-      if (! speedp) return false;
-
-      // convert to kph
-      *speed_kph = atof(speedp) * 1.852;
-
+      *fix_mode = atoi(tok);
     }
 
-    // only grab heading if needed
-    if (heading != NULL) {
+    /////Fixmode repetido
+   /////Además aquí, en el primer espacio reservado fue donde las funciones epezaron a fallar
+   //// tok = strtok(NULL, ","); parece no buscar espacios en balncos si nos más bien saltar los vacios en busca de otro elemento
 
-      // grab the speed in knots
-      char *coursep = strtok(NULL, ",");
-      if (! coursep) return false;
+    if (hdop != NULL) {
 
-      *heading = atof(coursep);
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
 
+      *hdop = atof(tok);
     }
 
-    // no need to continue
-    if (altitude == NULL)
-      return true;
+    if (pdop != NULL) {
 
-    // we need at least a 3D fix for altitude
-    if (GPSstatus() < 3)
-      return false;
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
 
-    // grab the mode 0 gps csv from the sim808
-    res_len = getGPS(0, gpsbuffer, 120);
+      *pdop = atof(tok);
+    }
 
-    // make sure we have a response
-    if (res_len == 0)
-      return false;
+    if (vdop != NULL) {
 
-    // skip mode
-    tok = strtok(gpsbuffer, ",");
-    if (! tok) return false;
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
 
-    // skip lat
-    tok = strtok(NULL, ",");
-    if (! tok) return false;
+      *vdop = atof(tok);
+    }
 
-    // skip long
-    tok = strtok(NULL, ",");
-    if (! tok) return false;
+    if (gps_view != NULL) {
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;  
+      *gps_view = atoi(tok);
+    }
 
-    // grab altitude
-    char *altp = strtok(NULL, ",");
-    if (! altp) return false;
+    if (gns_used != NULL) {
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      if (! tok) return false;
+      *gns_used = atoi(tok);
+    }
 
-    *altitude = atof(altp);
+    if (hpa != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      //if (! tok) return false; //Estos curiosamente desfasaban los resultados
+
+      *hpa = atoi(tok);
+    }
+
+    if (vpa != NULL) {
+
+      // grab the  in knots
+      tok = strtok(NULL, ",");
+      //if (! tok) return false; //Estos curiosamente desfasaban los resultados
+
+      *vpa = atoi(tok);
+    }
+    
   }
-
   return true;
-
 }
 
 boolean Adafruit_FONA::enableGPSNMEA(uint8_t i) {

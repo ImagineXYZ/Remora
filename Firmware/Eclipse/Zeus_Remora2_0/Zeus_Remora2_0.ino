@@ -8,8 +8,8 @@
 #include <ESP8266_XYZ.h>
 #include "wiring_private.h" //pinPeripheral
 
-#define Debug 0
-#define DebugESP 0 //Debug por ESP8266
+#define Debug 1
+#define DebugESP 0//Debug por ESP8266
 
 //==========================Defines===============================
 //Consulta de saldo Kolbi llamando al *888#
@@ -24,13 +24,22 @@
 #define SD_CS 15  //(A1)
 
 //Red para debugging por ESP
-//#define SSID F("WDebug")  //Nombre de la red a la que se desea conectar
-//#define PASS F("espdebug")   //Contraseña de la red
 #define SSID F("Javo")  //Nombre de la red a la que se desea conectar
 #define PASS F("123456789")   //Contraseña de la red
 
 //LED de prueba
 #define LED 25
+
+//=========================WDT==============================
+const uint8_t periodoWDT = 11;
+
+//=========================RAM Disponible==============================
+//Rutina para calcular el espacio de memoria Ram disponible
+extern "C" char *sbrk(int i);
+int Ram () {
+	char stack_dummy = 0;
+	return &stack_dummy - sbrk(0);
+}
 
 //=========================SERCOM==============================
 //Se instancian los puertos SPI y UART a partir de los SERCOM del SAMD21
@@ -48,7 +57,7 @@ void SERCOM2_Handler(){Serial2.IrqHandler();}
 
 //=====================Variables Globales========================
 //ID del dispositivo
-const unsigned int id = 12345u;
+String id = "XYZ001";
 
 //Variables para el cálculo de distancia entre 2 puntos
 float last_lat = 0;
@@ -60,27 +69,28 @@ long t1;
 long t2 = 0;
 
 //Auxiliares para el manejo de memoria durante la subida de datos
+String line;//Variable para almacenar temporalmente los datos de la SD en memoria
 signed long pos_a = 0;//Última posición en el archivo log.txt que se subió con respuesta del servidor 200
 
 //Variables de conteo para reset del FONA
 //GSM
-uint8_t TryGSM = 5;//Cantidad de intentos antes de reset general del FONA
+const uint8_t TryGSM = 5;//Cantidad de intentos antes de reset general del FONA
 uint8_t GSMCount = 0;
 //GPS
-uint8_t TryGPS = 15;//Cantidad de intentos antes del on/off en GPS del FONA
+const uint8_t TryGPS = 15;//Cantidad de intentos antes del on/off en GPS del FONA
 uint8_t NoGPSCount = 0;
 //GPRS
-uint8_t TryGPRS = 5;//Cantidad de intentos antes del on/off en GPRS
+const uint8_t TryGPRS = 5;//Cantidad de intentos antes del on/off en GPRS
 
 //Estructura de datos para determinación de zona más cercana
-//Quadtree remora_gis = Quadtree();
-//vector<Data> test_points;
+Quadtree remora_gis = Quadtree();
+vector<Data> test_points;
 
 //------------------------------ CONFIGURABLES POR SMS--------------------------------------
 //Variables para parámetros umbrales
 float los = 0.005f;
 uint16_t time_trig = 90;
-uint8_t delay_sec = 10;
+uint8_t delay_sec = 1;
 bool em_mode = 0;//Por ahora no se utiliza
 
 //Variables para parámetros de red celular
@@ -130,9 +140,6 @@ void sd_setup() {
 	if (Debug) {
 		Serial.println(F("SD lista"));
 	}
-	if (DebugESP){
-		esp.println(F("SD lista"));
-	}
 }
 
 //Configuración de puertos SERCOM (UART, SPI)
@@ -140,7 +147,7 @@ void sercom_setup() {
 	//Se inicia comunicación UART/SPI/I2C (DEBEN IR ANTES QUE pinPeripheral)
 	fonaSerial->begin(4800);
 	if (DebugESP){
-		WSerial.begin(9600);
+		WSerial.begin(115200);
 
 		//Asigna funcionalidad SERCOM1 a pines 13(Rx) y 11(Tx)
 		pinPeripheral(13, PIO_SERCOM);
@@ -155,10 +162,6 @@ void sercom_setup() {
 	if (Debug) {
 		Serial.println(F("SERCOM listo"));
 	}
-	if (DebugESP) {
-		esp.println(F("SERCOM listo"));
-	}
-
 }
 
 //Configuración del ESP para debugging
@@ -171,7 +174,12 @@ void esp_setup(){
 	if(Debug){
 		Serial.println("ESP Reset");
 	}
-	esp.connectAP(SSID, PASS);//no se encuentra en un ciclo, signifuca que puede o no conectarse y seguir con el programa
+
+	while (!esp.connectAP(SSID, PASS)){
+		delay(5000);
+	}
+	//no se encuentra en un ciclo, signifuca que puede o no conectarse y seguir con el programa
+
 	if(Debug){
 		Serial.println("ESP AP");
 		Serial.println("Setup OK"); //Si se muestra existe conexión
@@ -244,7 +252,6 @@ void Trunc_file(String file) {
 
 //Cargar las variables de configuración a memoria
 void load_config_params() {
-	String line;
 	File cfg_file = SD.open("config.txt");
 	cfg_file.readStringUntil('\n');
 	if (cfg_file) {
@@ -255,9 +262,9 @@ void load_config_params() {
 				line.trim();
 				Serial.println(line);
 			}
-			if (DebugESP){
-				esp.print(String(line));
-			}
+			//if (DebugESP){
+			//esp.print(String(line));
+			//}
 			switch(i){
 			case 0:
 				line.trim();
@@ -284,7 +291,6 @@ void load_config_params() {
 //Cargar las variables de red a memoria
 //Agregar función para reasignar los parámetros de red celular (ON/OFF del FONA???)
 void load_net_config() {
-	String line;
 	File net_file = SD.open("net.txt");
 	net_file.readStringUntil('\n');
 	if (net_file) {
@@ -295,9 +301,9 @@ void load_net_config() {
 				line.trim();
 				Serial.println(line);
 			}
-			if (DebugESP){
-				esp.print(String(line));
-			}
+			//if (DebugESP){
+			//esp.print(String(line));
+			//}
 			switch(i){
 			case 0:
 				line.trim();
@@ -319,7 +325,6 @@ void load_net_config() {
 
 //Cargar las variables de servidor a memoria
 void load_srv_config() {
-	String line;
 	File srv_file = SD.open("srv.txt");
 	srv_file.readStringUntil('\n');
 	if (srv_file) {
@@ -330,9 +335,9 @@ void load_srv_config() {
 				line.trim();
 				Serial.println(line);
 			}
-			if (DebugESP){
-				esp.print(String(line));
-			}
+			//if (DebugESP){
+			//esp.print(String(line));
+			//}
 			switch(i){
 			case 0:
 				line.trim();
@@ -350,8 +355,6 @@ void load_srv_config() {
 
 //Retorna la última línea que se subió correctamente al server, lo lee de un archivo en la SD
 unsigned long load_json_line(){
-
-	String line;
 	File line_file = SD.open("jsonline.txt");
 	line = line_file.readStringUntil('\n');
 
@@ -573,7 +576,7 @@ void process_sms(int8_t sms_num) {
 			fona.sendSMS(sender, "MAP UPD"); //Intentar confirmar al remitente
 			delay(100);
 			//GET map
-			load_map();
+			//load_map();
 		}
 
 		//Si el contenido del SMS es el código de emergencia
@@ -623,13 +626,19 @@ String get_gps() {
 	if (Debug) {
 		Serial.println(F("Calculando Ubicacion..."));
 	}
-	float speed_kph, heading, altitude;
+	float speed_kph, heading, altitude,hdop,pdop,vdop,hpa,vpa;
 	double date;
-	boolean gps_success = fona.getGPS(&date, &curr_lat, &curr_lon, &speed_kph, &heading, &altitude);
-	String msg = "z";
+	bool run,fix;
+	uint8_t fix_mode,gps_view,gns_used;
+	float fuel = 1200.00;
+	int Motor = 1;
+
+	boolean gps_success = fona.getGPS(&date, &curr_lat, &curr_lon, &speed_kph, &heading, &altitude,&run,&fix, &fix_mode,&hdop, &pdop, &vdop, &gps_view, &gns_used, &hpa, &vpa);
+	String msg = "";
 	if (gps_success) {
 		ledbugging(1,1);
-		msg = "{\"fecha\":" + String(date, 0) + ",\"lat\":" + String(curr_lat, 6) + ",\"lon\":" + String(curr_lon, 6) + ",\"vel\":" + speed_kph + ",\"alt\":" + altitude + ",\"Head\":" + heading;
+		//Todos los datos del GPS
+		msg = "{\"ID\":\"" + id + "\",\"fecha\":" + String(date, 0) + ",\"lat\":" + String(curr_lat, 6) + ",\"lon\":" + String(curr_lon, 6) + ",\"vel\":" + String(speed_kph,2) + ",\"alt\":" + String(altitude,3) + ",\"Head\":" + String(heading,2) + ",\"RunStatus\":" +  String(run) + ",\"Fix\":" +  String(fix) + ",\"FixMode\":" +  String(fix_mode) + ",\"HDOP\":" +  String(hdop,2) + ",\"PDOP\":" +  String(pdop,2)+ ",\"VDOP\":" +  String(vdop,2) + ",\"GPSView\":" +  String(gps_view) + ",\"GNSS_used\":" +  String(gns_used) + ",\"HPA\":" +  String(hpa,1)  + ",\"VPA\":" +  String(vpa,1) + ",\"fuel\":" + String(fuel) + ",\"Motor\":" + String(Motor) + ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, curr_lon));
 		NoGPSCount = 0;
 		return msg;
 	}
@@ -662,10 +671,11 @@ int fona_post(String url, String msg) {
 
 
 		char url_char[46]; //length +1
-		char data[120];
+		char data[300];
 
+		//{"ID":XYZ001,"fecha":20170523230402,"lat":99.937687,"lon":-144.061256,"vel":100.09,"alt":10209.80,"Head":258.50,"RunStatus":1,"Fix":1,"FixMode":1,"HDOP":10.20,"PDOP":10.50,"VDOP":10.90,"GPSView":12,"GNSS_used":15,"HPA":39.0,"VPA":10.0,"fuel":0000.00,"Motor":1,"QuadTree":0,"RSSI":"18"}		//{"ID":"XYZ001","fecha":"20160914234855","lat":"-90.937282","lon":"-180.059265","vel":"999.99","alt":"10018.9","Head":"279.10","RunStatus":"1","Fix":"1","FixMode":"1","HDOP":"10.2","PDOP":"10.8","VDOP":"10.9","GPSView":"99","GNSS_used":"99","GNSS_view":"99","HPA":"9999.9","VPA":"9999.9","fuel":"0000.00","Motor":"1","Quadtree":"1","RSSI":"18"}
 		url.toCharArray(url_char, 46); //length +1
-		msg.toCharArray(data, 120);
+		msg.toCharArray(data, 300);
 
 		uint8_t i = 0;
 		uint8_t estado = Net_Status();
@@ -889,6 +899,56 @@ void load_map(){
 
 }
 
+//=========================WDT==============================//
+
+//Sincronización del WDT
+static void WDTsync() {
+	while (WDT->STATUS.bit.SYNCBUSY == 1);
+}
+
+//Sincronización del GCLK
+static void GCLKsync() {
+	while (GCLK->STATUS.bit.SYNCBUSY == 1);
+}
+
+// reset del WDT (DEBE ser con 0xA5)
+void resetWDT() {
+	WDT->CLEAR.reg = 0xA5;
+	WDTsync();
+}
+
+// reset del sistema (DIFERENTE de 0xA5)
+void systemReset() {
+	WDT->CLEAR.reg = 0x00;
+	WDTsync();
+}
+
+// desacttivar WDT
+void disableWDT(){
+	WDT->CTRL.reg = 0;
+	WDTsync();
+}
+
+//Setup WDT
+void setupWDT(uint8_t period) {
+	WDT->CTRL.reg = 0; // Se desactiva WDT
+	WDTsync(); // Sincronizar para no perder configuración
+
+	GCLK->GENDIV.reg = 0x1F02; //Establece la división del generador de relojes (GCLKGEN2/2^5)
+	GCLKsync(); // Sincronizar para no perder configuración
+
+	GCLK->GENCTRL.reg = 0x110302; //Relaciona OSCULP32K con GCLKGEN2
+	GCLKsync(); // Sincronizar para no perder configuración
+
+	GCLK->CLKCTRL.reg = 0x4203; //Relaciona GCLKGEN2 con GCLK_WDT
+	GCLKsync(); // Sincronizar para no perder configuración
+
+	WDT->CONFIG.reg = min(period, periodoWDT); // Tabla 17-5 Timeout Period
+
+	WDT->CTRL.reg = WDT_CTRL_ENABLE; //Activar WDT
+	WDTsync(); // Sincronizar para no perder configuración
+}
+
 //===========================================================================================//
 void setup() {
 	pinMode(LED, OUTPUT);
@@ -898,7 +958,7 @@ void setup() {
 	delay(1000);
 
 	if (Debug){
-		Serial.begin(115200);
+		Serial.begin(9600);
 		while (! Serial);
 	}
 
@@ -942,40 +1002,57 @@ void setup() {
 	if (DebugESP) {
 		esp.println(F("======SETUP LISTO======"));
 	}
-	/*remora_gis.insert(-84.110250f, 9.933845f, 0x1E1);
-	remora_gis.insert(-84.108877f, 9.938325f, 0x2DF);
-	remora_gis.insert(-84.098514f, 9.937848f, 0x2D4);
-	remora_gis.insert(-84.098266f, 9.935712f, 0x2D2);
-	remora_gis.insert(-84.099593f, 9.935712f, 0x2D6);
-	remora_gis.insert(-84.099605f, 9.932733f, 0x2D2);*/
+
+	//La Sabana
+	//remora_gis.insert(-84.110250f, 9.933845f, 0x1E1);
+	//remora_gis.insert(-84.108877f, 9.938325f, 0x2DF);
+	//remora_gis.insert(-84.098514f, 9.937848f, 0x2D4);
+	//remora_gis.insert(-84.098266f, 9.935712f, 0x2D2);
+	//remora_gis.insert(-84.099593f, 9.935712f, 0x2D6);
+	//remora_gis.insert(-84.099605f, 9.932733f, 0x2D2);
+
+	//Office
+	remora_gis.insert(-84.061049f,9.937767f,0x1F);
+
+	//WDT
+	setupWDT( periodoWDT ); //Inicialización del WDT
 }
 
 void loop() {
+	resetWDT();
+	/*if (Debug) {
+		Serial.print("freeMemory()=");
+		Serial.println(Ram());
+	}
 
+	if (DebugESP) {
+		esp.print("freeMemory()=");
+		esp.println(String(Ram()));
+	}*/
 	t1 = millis();//agregar t1 para tomar datos de tiempo y romper umbral
 
 	//Obtener datos de ubicación
 	String status_str = get_gps();
-	if (status_str != "ERROR") {
-		assert_write(status_str); //Determinar si se ha roto algún umbral
-	}
 
-	/*if(point_in_area(test_points, curr_lat, curr_lon)){
-		String msg = "{\"lat\":";
-		msg += String(curr_lat);
-		msg += ",\"lon\":";
-		msg += String(curr_lon);
-		msg += "}\n";
-		write_file("violations.txt", msg);
+	if(point_in_area(test_points, curr_lat, curr_lon)){
 		if (Debug) {
-			Serial.println("VIOLACION DE AREA");
+			Serial.print("Violacion");
 		}
-		//Encender alarma
+		if (DebugESP) {
+			esp.print("Violacion");
+		}
+	}
+	else {
+		if (Debug) {
+			Serial.print("Bajo Control");
+		}
+		if (DebugESP) {
+			esp.print("Bajo Control");
+		}
 	}
 
-	else {
-		em_mode = 0;
-		//apagar bandera alarma
+	/*if (status_str != "ERROR") {
+		assert_write(status_str); //Determinar si se ha roto algún umbral
 	}*/
 
 	//Rutina para realizar un reset al FONA en caso de que tenga señal y no esté registrado en la red

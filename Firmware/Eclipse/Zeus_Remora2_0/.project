@@ -49,12 +49,17 @@
 		<link>
 			<name>libraries/Adafruit_FONA</name>
 			<type>2</type>
-			<location>/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA</location>
+			<location>/home/carvajavo/Arduino/libraries/Adafruit_FONA</location>
 		</link>
 		<link>
 			<name>libraries/ESP8266_XYZ</name>
 			<type>2</type>
 			<location>/home/carvajavo/Arduino/libraries/ESP8266_XYZ</location>
+		</link>
+		<link>
+			<name>libraries/Quadtree</name>
+			<type>2</type>
+			<location>/home/carvajavo/Arduino/libraries/Quadtree</location>
 		</link>
 		<link>
 			<name>libraries/SD</name>

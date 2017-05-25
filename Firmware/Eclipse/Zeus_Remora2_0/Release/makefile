@@ -12,13 +12,13 @@ RM := rm -f
 -include libraries/SPI/subdir.mk
 -include libraries/SD/src/utility/subdir.mk
 -include libraries/SD/src/subdir.mk
+-include libraries/Quadtree/subdir.mk
 -include libraries/ESP8266_XYZ/subdir.mk
 -include libraries/Adafruit_FONA/subdir.mk
 -include core/variant/subdir.mk
 -include core/core/avr/subdir.mk
 -include core/core/USB/subdir.mk
 -include core/core/subdir.mk
--include Quadtree/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)

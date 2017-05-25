@@ -137,7 +137,7 @@ class Adafruit_FONA : public FONAStreamType {
   boolean enableGPS(boolean onoff);
   int8_t GPSstatus(void);
   uint8_t getGPS(uint8_t arg, char *buffer, uint8_t maxbuff);
-  boolean getGPS(double *date, float *lat, float *lon, float *speed_kph=0, float *heading=0, float *altitude=0);
+  boolean getGPS(double *date, float *lat, float *lon, float *speed_kph, float *heading, float *altitude, bool *run, bool *fix, uint8_t *fix_mode, float *hdop, float *pdop, float *vdop, uint8_t *gps_view, uint8_t *gns_used, /*uint8_t *gns_view, uint8_t *cno,*/ float *hpa, float *vpa);
   boolean enableGPSNMEA(uint8_t nmea);
 
   // TCP raw connections

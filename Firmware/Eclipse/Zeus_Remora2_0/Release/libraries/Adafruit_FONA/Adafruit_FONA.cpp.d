@@ -1,12 +1,12 @@
 libraries/Adafruit_FONA/Adafruit_FONA.cpp.o: \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/Adafruit_FONA.cpp \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/Adafruit_FONA.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAExtIncludes.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/Adafruit_FONA.cpp \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/Adafruit_FONA.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAExtIncludes.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/Arduino.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/avr/pgmspace.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/avr/interrupt.h \
@@ -109,19 +109,19 @@ libraries/Adafruit_FONA/Adafruit_FONA.cpp.o: \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/USB/USB_host.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/USB/samd21_host.h
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/Adafruit_FONA.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/Adafruit_FONA.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAExtIncludes.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAExtIncludes.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h:
 
 /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/Arduino.h:
 

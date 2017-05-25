@@ -110,14 +110,14 @@
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/Print.h \
  /home/carvajavo/sloeber/arduinoPlugin/libraries/SD/1.1.1/src/utility/SdFatUtil.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/avr/dtostrf.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/Adafruit_FONA.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAExtIncludes.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h \
- /home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h \
- /home/carvajavo/Documents/Github/Remora/libraries/Quadtree/quadtree.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/Adafruit_FONA.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAExtIncludes.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h \
+ /home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h \
+ /home/carvajavo/Arduino/libraries/Quadtree/quadtree.h \
  /home/carvajavo/Arduino/libraries/ESP8266_XYZ/ESP8266_XYZ.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/wiring_private.h \
  ../Zeus_Remora2_0.ino
@@ -344,21 +344,21 @@
 
 /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/avr/dtostrf.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/Adafruit_FONA.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/Adafruit_FONA.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAExtIncludes.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAExtIncludes.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/FONAConfig.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/FONAConfig.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatform.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/../FONAConfig.h:
 
-/home/carvajavo/Documents/Github/SmartDrive/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h:
+/home/carvajavo/Arduino/libraries/Adafruit_FONA/includes/platform/FONAPlatStd.h:
 
-/home/carvajavo/Documents/Github/Remora/libraries/Quadtree/quadtree.h:
+/home/carvajavo/Arduino/libraries/Quadtree/quadtree.h:
 
 /home/carvajavo/Arduino/libraries/ESP8266_XYZ/ESP8266_XYZ.h:
 

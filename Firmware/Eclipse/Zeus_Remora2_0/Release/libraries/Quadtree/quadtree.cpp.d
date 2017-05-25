@@ -1,6 +1,6 @@
-Quadtree/quadtree.cpp.o: \
- /home/carvajavo/Documents/Github/Remora/libraries/Quadtree/quadtree.cpp \
- /home/carvajavo/Documents/Github/Remora/libraries/Quadtree/quadtree.h \
+libraries/Quadtree/quadtree.cpp.o: \
+ /home/carvajavo/Arduino/libraries/Quadtree/quadtree.cpp \
+ /home/carvajavo/Arduino/libraries/Quadtree/quadtree.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/Arduino.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/avr/pgmspace.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/avr/interrupt.h \
@@ -103,7 +103,7 @@ Quadtree/quadtree.cpp.o: \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/USB/USB_host.h \
  /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/USB/samd21_host.h
 
-/home/carvajavo/Documents/Github/Remora/libraries/Quadtree/quadtree.h:
+/home/carvajavo/Arduino/libraries/Quadtree/quadtree.h:
 
 /home/carvajavo/sloeber/arduinoPlugin/packages/adafruit/hardware/samd/1.0.13/cores/arduino/Arduino.h:
 

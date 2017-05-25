@@ -27,6 +27,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/SD/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/Quadtree}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/ESP8266_XYZ}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/Quadtree}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1429899859" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -40,6 +41,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/SD/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/Quadtree}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/ESP8266_XYZ}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/Quadtree}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.244965435" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -53,6 +55,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/SD/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/Quadtree}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/ESP8266_XYZ}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Zeus_Remora2_0/libraries/Quadtree}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.236902145" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
