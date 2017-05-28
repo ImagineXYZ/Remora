@@ -1,7 +1,9 @@
 msg = "{\"ID\:" + id + ",\"fecha\":" + String(date, 0) + ",\"lat\":" + String(curr_lat, 6) + ",\"lon\":" + String(curr_lon, 6) + ",\"vel\":" + String(speed_kph,2) + ",\"alt\":" + altitude + ",\"Head\":" + String(heading,2) + ",\"RunStatus\":" +  String(run) + ",\"Fix\":" +  String(fix) + ",\"FixMode\":" +  String(fix_mode) + ",\"HDOP\":" +  String(hdop,1) + ",\"PDOP\":" +  String(pdop,1)+ ",\"VDOP\":" +  String(vdop,1) + ",\"GPSView\":" +  String(gps_view) + ",\"GNSS_used\":" +  String(gns_used) + ",\"GNSS_view\":" +  String(gns_view) + ",\"HPA\":" +  String(hpa,1)  + ",\"VPA\":" +  String(Vpa,1);
-		msg = msg + ",\"fuel\":" + "0000.00" + ",\"Motor\":" + "1"+ ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, curr_lon));
 
-{"ID":"XYZ001","fecha":"20160914234855","lat":"-90.937282","lon":"-180.059265","vel":"999.99","alt":"10018.9","Head":"279.10","RunStatus":"1","Fix":"1","FixMode":"1","HDOP":"10.2","PDOP":"10.8","VDOP":"10.9","GPSView":"99","GNSS_used":"99","GNSS_view":"99","HPA":"9999.9","VPA":"9999.9","fuel":"0000.00","Motor":"1","Quadtree":"1","RSSI":"18"}
+
+msg = msg + ",\"fuel\":" + "0000.00" + ",\"Motor\":" + "1"+ ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, curr_lon));
+
+{"ID":"XYZ001","fecha":20160914234855,"lat":-90.937282,"lon":-180.059265,"vel":999.99,"alt":10018.900,"Head":279.10,"RunStatus":1,"Fix":1,"FixMode":1,"HDOP":10.2,"PDOP":10.8,"VDOP":10.9,"GPSView":99,"GNSS_used":99,"HPA":9999.9,"VPA":9999.9,"fuel":0000.00,"Motor":1,"Quadtree":1,"RSSI":18,"RAM":30000}
 
 AT+CGNSPWR=1   Power
 
