@@ -1,0 +1,182 @@
+Plot Report
+-----------
+
+Report Written:     Friday, May 26, 2017
+Project Path:       C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.prj
+Design Path:        C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.pcb
+Design Title:       
+Created:            18/05/2017 02:38:11 p.m.
+Last Saved:         26/05/2017 10:59:10 a.m.
+Editing Time:       280 min
+Units:              mm (precision 3)
+
+
+Device Settings
+===============
+
+
+Gerber Settings
+===============
+
+    Leading zero suppression.
+    G01 assumed throughout.
+    Line termination <*> <CR> <LF>.
+    3.5 format absolute inches.
+    Format commands defined in Gerber file.
+    Aperture table defined in Gerber file.
+    Hardware arcs allowed.
+
+
+Drill Settings
+==============
+
+    Excellon Format 1    Format 3.5 absolute in mm.
+    No zero suppression.
+
+
+Plots Output
+============
+
+    Plot Job: "C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.mop"
+
+
+Gerber Output
+=============
+
+C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger - Top Copper.gbr
+
+    Layers:
+    --------------
+    Top Copper
+
+    D-Code Shape  (thou)
+    -----------------------------------------------
+    D10    Rectangle 15.75 X 43.31
+    D12    Round 86.61
+    D16    Round 15.75
+    D17    Round 137.80
+    D18    Square 78.74
+    D19    Round 78.74
+    D70    Round 98.43
+    D71    Square 82.68
+    D20    Round 82.68
+    D21    Square 118.11
+    D22    Round 118.11
+    D23    Square 98.43
+    D24    Rectangle 55.00 X 60.00
+    D25    Round 94.49
+    D26    Rectangle 43.31 X 145.67  Rotation 90
+    D27    Rectangle 62.99 X 137.80  Rotation 90
+    D28    Octagon 78.74
+    D29    Round 39.37
+    D72    Round 25.00
+    D73    Round 23.62
+
+Gerber Output
+=============
+
+C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger - Bottom Copper.gbr
+
+    Layers:
+    -----------------
+    Bottom Copper
+
+    D-Code Shape  (thou)
+    -----------------------
+    D12    Round 86.61
+    D16    Round 15.75
+    D17    Round 137.80
+    D18    Square 78.74
+    D19    Round 78.74
+    D70    Round 98.43
+    D71    Square 82.68
+    D20    Round 82.68
+    D21    Square 118.11
+    D22    Round 118.11
+    D23    Square 98.43
+    D25    Round 94.49
+    D28    Octagon 78.74
+    D29    Round 39.37
+    D72    Round 25.00
+    D73    Round 23.62
+
+NC Drill Output
+===============
+
+C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger - Drill Data - [Through Hole].drl
+
+    Output:
+    ---------------------------
+    Plated Round Drill Holes
+    Plated Slots
+    Plated Board Outlines
+
+    Tool  Size         Count   ID
+    ------------------------------------
+    T001  000.02362 in 10    F
+    T002  000.03000 in 28    D
+    T003  000.03543 in 101   A
+    T004  000.04000 in 4     C
+    T005  000.04331 in 6     E
+    T006  000.12598 in 3     B
+    ------------------------------------
+    Total              152
+    ------------------------------------
+
+C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger - Drill Data - [Through Hole] (Unplated).drl
+
+    Output:
+    -----------------------------
+    Unplated Round Drill Holes
+    Unplated Slots
+    Unplated Board Outlines
+
+    Tool  Size         Count   ID
+    ------------------------------------
+    T001  000.02500 in 1
+    ------------------------------------
+    Total              1
+    ------------------------------------
+
+
+Gerber Output
+=============
+
+C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger - Drill Ident Drawing - [Through Hole].gbr
+
+    Layers:
+    ------------------
+    [Through Hole]
+
+
+Drill Ident Drawing
+===================
+
+    Drill Plated Size Shape ID
+    -----------------------------------
+    35    Y      100  Round A
+    126   Y      100  Round B
+    40    Y      100  Round C
+    30    Y      100  Round D
+    43    Y      100  Round E
+    24    Y      100  Round F
+
+    D-Code Shape  (thou)
+    -----------------------
+    D14    Round 100.00
+    D15    Round 5.00
+
+Gerber Output
+=============
+
+C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger - BoardOutline.gbr
+
+    Layers:
+    ------------------
+    Board Outlines
+
+    D-Code Shape  (thou)
+    -----------------------
+    D15    Round 5.00
+
+End Of Report.

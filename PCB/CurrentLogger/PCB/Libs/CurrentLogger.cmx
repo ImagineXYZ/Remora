@@ -1,0 +1,15 @@
+1N4748||#SOL=2=54 B 2 DIN 41880||@RS Part Number=||@Allied_Number=||@Manufacturer_Name=||@Manufacturer_Part_Number=||@Other Part Number=||@3D Package=||@Height=||@Value=3.3V 1W
+2P||#SOL=2=2P||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+74HC125N,652||#SOT27-1=14=SOT27-1||@[Description]=74HC125N,652||@Vendor=NXP||@Manufacturer_Part_Number=74HC125N,652||@Section=Standard and Speciality Logic||@Family=Buffer and Line Driver||@Manufacturer_Name=NXP||@RS Part Number=1697403||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+Block2_5mm||#SOL=2=Block2_5mm||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+Block3_5mm||#SOL=3=Block3_5mm||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+CapPoli2.2nF100V||#SOL=2=CapPoliester||@RS Part Number=||@Allied_Number=||@Manufacturer_Name=||@Manufacturer_Part_Number=||@Other Part Number=||@3D Package=||@Height=||@Value=2.2nF 100V
+CapPoli180nF100V||#SOL=2=CapPoliester||@RS Part Number=||@Allied_Number=||@Manufacturer_Name=||@Manufacturer_Part_Number=||@Other Part Number=||@3D Package=||@Height=||@Value=180nF 100V
+ERJ-PB6B1002V||#SM=2=0805||@RS Part Number=||@Allied_Number=||@Manufacturer_Name=||@Manufacturer_Part_Number=||@Other Part Number=||@3D Package=||@Height=||@Value=10k 0.1%
+ESP8266||#DIL=8=ESP8266v1||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+FeatherAdalogger||#SOL=28=FeatherAdalogger||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+JST-PH2||#SM=4=JST-PH 2 SMT||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+LT6100HMS8||#SM=8=MS8||@RS Part Number=||@Allied_Number=||@Manufacturer_Name=||@Manufacturer_Part_Number=||@Other Part Number=||@3D Package=||@Height=
+PushButton_SPST_6mm_TH||#SOL=2=SPST_6mm||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+Resistor||#DSC=2=DISC04||@[Description]=Resistor||@Value=1K||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=
+Y09300R10000B0L||#SOL=4=VCS101||@Manufacturer_Part_Number=||@Manufacturer_Name=||@RS Part Number=||@Allied_Number=||@Other Part Number=||@3D Package=||@Height=

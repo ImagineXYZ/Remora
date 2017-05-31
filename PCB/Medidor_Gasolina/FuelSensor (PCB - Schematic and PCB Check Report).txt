@@ -1,0 +1,18 @@
+Schematic and PCB Check Report
+------------------------------
+
+Report File:        D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor (PCB - Schematic and PCB Check Report).txt
+Report Written:     Thursday, May 25, 2017
+Design Path:        D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor.pcb
+Design Title:       
+Created:            25-May-17 3:36:20 PM
+Last Saved:         25-May-17 3:48:05 PM
+Editing Time:       24 min
+Units:              mm (precision 3)
+
+
+Checking integrity of Schematic "D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor.sch" with PCB "D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor.pcb"
+==============================================================================================================================================================================================================================================
+
+
+End Of Report.

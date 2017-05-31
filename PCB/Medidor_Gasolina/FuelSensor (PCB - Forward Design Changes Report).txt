@@ -1,0 +1,44 @@
+Forward Design Changes Report
+-----------------------------
+
+Report File:        D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor (PCB - Forward Design Changes Report).txt
+Report Written:     Thursday, May 25, 2017
+Design Path:        D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor.pcb
+Design Title:       
+Created:            25-May-17 3:36:20 PM
+Last Saved:         25-May-17 3:48:05 PM
+Editing Time:       24 min
+Units:              mm (precision 3)
+
+Disconnected pin "U1-1" from net "N0011".
+Disconnected pin "U1-2" from net "N0011".
+Disconnected pin "U1-8" from net "N0012".
+Disconnected pin "J1-1" from net "GND".
+Disconnected pin "J1-2" from net "N0007".
+Disconnected pin "C3-1" from net "N0012".
+Disconnected pin "C3-2" from net "N0011".
+Disconnected pin "C3-3" from net "GND".
+
+Deleted component reference "J1".
+Deleted component reference "C3".
+
+Deleted net "N0011".
+Deleted net "N0012".
+
+Added net "N0017".
+Added net "N0019".
+
+Added component reference "CONN1" of component "Block2_5mm", package "SOL".
+Added component reference "CONN2" of component "Block3_5mm", package "SOL".
+
+Connected pin "U1-2" to net "N0019".
+Connected pin "U1-1" to net "N0019".
+Connected pin "U1-8" to net "N0017".
+Connected pin "CONN1-1" to net "N0007".
+Connected pin "CONN1-2" to net "GND".
+Connected pin "CONN2-1" to net "N0017".
+Connected pin "CONN2-2" to net "N0019".
+Connected pin "CONN2-3" to net "GND".
+
+
+End Of Report.
