@@ -1,0 +1,19 @@
+Forward Design Changes Report
+-----------------------------
+
+Report Written:     Friday, May 26, 2017
+Project Path:       C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.prj
+Design Path:        C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.pcb
+Design Title:       
+Created:            18/05/2017 02:38:11 p.m.
+Last Saved:         26/05/2017 10:23:42 a.m.
+Editing Time:       246 min
+Units:              mm (precision 3)
+
+Connected pin "U3-2" to net "V3.3".
+Connected pin "U3-4" to net "V3.3".
+Connected pin "U3-6" to net "V3.3".
+Connected pin "U3-7" to net "V3.3".
+
+
+End Of Report.

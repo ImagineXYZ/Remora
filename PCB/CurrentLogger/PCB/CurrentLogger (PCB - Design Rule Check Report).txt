@@ -1,0 +1,64 @@
+Design Rule Check Report
+------------------------
+
+Report Written:     Friday, May 26, 2017
+Project Path:       C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.prj
+Design Path:        C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.pcb
+Design Title:       
+Created:            18/05/2017 02:38:11 p.m.
+Last Saved:         26/05/2017 10:41:21 a.m.
+Editing Time:       262 min
+Units:              mm (precision 3)
+
+
+Results
+=======
+
+
+No errors found
+
+
+Settings
+========
+
+
+Spacings
+
+=========
+
+Tracks        Yes
+Pads and Vias Yes
+Shapes        Yes
+Text          Yes
+Board         Yes
+Drills        Yes
+Components    No
+
+
+Manufacturing
+
+==============
+
+Drill Breakout                  No
+Drill Backoff                   No
+Silkscreen Overlap              No
+Copper Text In Board            No
+Min Track Width                 No
+Min Annular Ring                No
+Min Paste Size                  No
+Vias In Pads                    No
+Unplated Vias                   No
+Unplated Pads With Inner Tracks No
+
+
+Nets
+
+=====
+
+Net Completion               Yes
+Dangling Tracks              Yes
+Net Track Length Differences No
+
+
+
+End Of Report.

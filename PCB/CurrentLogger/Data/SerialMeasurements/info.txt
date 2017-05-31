@@ -1,0 +1,20 @@
+data_20170530_1.dat
+
+Experimento: Medición de placa Zeus sin delays y con monitor serial, valores calculados en el micro con multiplicador k y piso ADC b.
+Captura con script python.
+
+Columna 1: I1[A]
+Columna 2: I2[A]
+Columna 3: VL
+Columna 4: Timestamp OS
+
+G1=10
+G10=50
+k1=2*10*(1/10.0)*3.3/4096.0;
+b1=25;
+k2=10*(1/50.0)*3.3/4096.0;
+b2=45;
+
+L: ZeusBoard, 12V (Fuente PC)
+
+T=79,5s

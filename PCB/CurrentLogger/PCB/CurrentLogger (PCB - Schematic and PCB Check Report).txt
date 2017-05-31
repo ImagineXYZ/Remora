@@ -1,0 +1,18 @@
+Schematic and PCB Check Report
+------------------------------
+
+Report Written:     Friday, May 26, 2017
+Project Path:       C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.prj
+Design Path:        C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.pcb
+Design Title:       
+Created:            18/05/2017 02:38:11 p.m.
+Last Saved:         26/05/2017 10:23:42 a.m.
+Editing Time:       246 min
+Units:              mm (precision 3)
+
+
+Checking integrity of Schematic "C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.sch" with PCB "C:\users\bryanmtdt\My Documents\ImagineXYZ\CurrentLogger\PCB\CurrentLogger.pcb"
+==========================================================================================================================================================================================================
+
+
+End Of Report.
