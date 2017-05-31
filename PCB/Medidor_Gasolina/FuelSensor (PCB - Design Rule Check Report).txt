@@ -1,0 +1,66 @@
+Design Rule Check Report
+------------------------
+
+Report File:        D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor (PCB - Design Rule Check Report).txt
+Report Written:     Thursday, May 25, 2017
+Design Path:        D:\Usuarios\husan\Documents\ImagineXYZ\REMORA\MedidorGasolina\MedidorGasolina\PCB\FuelSensor.pcb
+Design Title:       
+Created:            25-May-17 3:36:20 PM
+Last Saved:         25-May-17 4:40:44 PM
+Editing Time:       68 min
+Units:              mm (precision 3)
+
+
+Results
+=======
+
+Track to Text error (T-X) at (24.384 -24.530) on layer "Bottom Copper".
+    Error between Track (Net 'GND') and Text, Gap is 0.000 needs to be 0.254.
+
+Number of errors found : 1
+
+
+Settings
+========
+
+
+Spacings
+
+=========
+
+Tracks        Yes
+Pads and Vias Yes
+Shapes        Yes
+Text          Yes
+Board         Yes
+Drills        Yes
+Components    No
+
+
+Manufacturing
+
+==============
+
+Drill Breakout                  No
+Drill Backoff                   No
+Silkscreen Overlap              No
+Copper Text In Board            No
+Min Track Width                 No
+Min Annular Ring                No
+Min Paste Size                  No
+Vias In Pads                    No
+Unplated Vias                   No
+Unplated Pads With Inner Tracks No
+
+
+Nets
+
+=====
+
+Net Completion               Yes
+Dangling Tracks              Yes
+Net Track Length Differences No
+
+
+
+End Of Report.
