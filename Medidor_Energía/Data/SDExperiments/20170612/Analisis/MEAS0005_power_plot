@@ -1,0 +1,16 @@
+set samples 700
+set datafile separator comma
+set xlabel 'Time[us]'
+plot 	'../MEAS0005.TXT' using ($4/1000000):($1-0.015) with linespoints pt 7 ps 0.5 title "IL1[A]",\
+		'../MEAS0005.TXT' using ($4/1000000):2 with linespoints pt 7 ps 0.5  title "IL2[A]",\
+		'../MEAS0005.TXT' using ($4/1000000):3 with linespoints pt 7 ps 0.5 title "VL[V]",\
+		'../MEAS0005.TXT' using ($4/1000000):(((($1-0.015)>($2+0.015))&&($2>0.0015))?($1-0.015):$2) with linespoints pt 7 ps 0.5 lw 2 title "IL[A]",\
+		'../MEAS0005.TXT' using ($4/1000000):($3*(((($1-0.015)>($2+0.015))&&($2>0.0015))?($1-0.015):$2)) with linespoints pt 7 ps 1 lw 1.5 title "PL[W]"
+		
+	
+pause -1
+
+#'../MEAS0005.TXT' using 4:(((($1-0.015)>$2)&&($2>0.0015))?($1-0.015):$2) with linespoints pt 7 ps 0.5 title "Higher I",\
+# data=system("sed 1,1d ".file."|tr ',' ' ' | awk '{print $4}'") #Obtiene la columna de timestamp [micros]
+# dataf(x)=word(data,x)+0
+#f(x)=(x>0 && x<words(data))?word(data,x)+0:0
