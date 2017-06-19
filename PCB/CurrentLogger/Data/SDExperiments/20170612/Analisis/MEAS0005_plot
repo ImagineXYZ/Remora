@@ -1,0 +1,11 @@
+set samples 700
+set datafile separator comma
+plot 	'../MEAS0005.TXT' using 4:($1-0.015) with linespoints pt 7 ps 0.5 title "I1",\
+		'../MEAS0005.TXT' using 4:2 with linespoints pt 7 ps 0.5  title "I2",\
+		'../MEAS0005.TXT' using 4:3 with linespoints pt 7 ps 0.5 title "V",\
+		'../MEAS0005.TXT' using 4:(((($1-0.015)>($2+0.015))&&($2>0.0015))?($1-0.015):$2) with linespoints pt 7 ps 0.5 lw 2 title "I2 and Outliers I1",\
+		'../MEAS0005.TXT' using 4:($3*(((($1-0.015)>($2+0.015))&&($2>0.0015))?($1-0.015):$2)) with linespoints pt 7 ps 1 lw 2 title "P"
+	
+pause -1
+
+#'../MEAS0005.TXT' using 4:(((($1-0.015)>$2)&&($2>0.0015))?($1-0.015):$2) with linespoints pt 7 ps 0.5 title "Higher I",\

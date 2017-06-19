@@ -1,0 +1,9 @@
+set samples 700
+set datafile separator comma
+plot 	'../MEAS0005.TXT' using 4:($1-0.015) smooth sbezier title "I1",\
+		"" using 4:($1-0.015) notitle with points linestyle 1 ps 0.4,\
+		'../MEAS0005.TXT' using 4:2 smooth sbezier title "I2",\
+		"" using 4:2 notitle with points linestyle 7 ps 0.4,\
+		'../MEAS0005.TXT' using 4:3 smooth sbezier title "V",\
+		"" using 4:3 notitle with points linestyle 1 ps 0.4
+pause -1
