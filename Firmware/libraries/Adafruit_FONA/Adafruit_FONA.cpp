@@ -837,7 +837,31 @@ uint8_t Adafruit_FONA::getGPS(uint8_t arg, char *buffer, uint8_t maxbuff) {
   return len;
 }
 
-boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed_kph, float *heading, float *altitude, bool *run, bool *fix, uint8_t *fix_mode, float *hdop, float *pdop, float *vdop, uint8_t *gps_view, uint8_t *gns_used, /*uint8_t *gns_view, uint8_t *cno,*/ float *hpa, float *vpa) {
+//https://stackoverflow.com/questions/36967099/parse-gnss-nmea-string
+static char *strtok_single(char *str, char const *delims)
+{
+    static char  *src = NULL;
+    char  *p,  *ret = 0;
+
+    if (str != NULL)
+        src = str;
+
+    if (src == NULL || *src == '\0')    // Fix 1
+        return NULL;
+
+    ret = src;                          // Fix 2
+    if ((p = strpbrk(src, delims)) != NULL)
+    {
+        *p  = 0;
+        src = ++p;
+    }
+    else
+        src += strlen(src);
+
+    return ret;
+}
+
+boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed_kph, float *heading, float *altitude, bool *run, bool *fix, uint8_t *fix_mode, float *hdop, float *pdop, float *vdop, uint8_t *gps_view, uint8_t *gns_used, uint8_t *gns_view, uint8_t *cno, float *hpa, float *vpa) {
 
   char gpsbuffer[120];
 
@@ -852,140 +876,48 @@ boolean Adafruit_FONA::getGPS(double *date, float *lat, float *lon, float *speed
   if (res_len == 0)
     return false;
 
-  /////Eliminé todos los condicionales que involucraban otra versiones de hardware: 3G o Fona 808 V1
+  *run = atoi(strtok_single(NULL, ","));// Gets GNSSrunstatus
 
-  if (_type == FONA808_V2) {
-    // Parse 808 V2 response.  See table 2-3 from here for format:
-    // http://www.adafruit.com/datasheets/SIM800%20Series_GNSS_Application%20Note%20V1.00.pdf
+  *fix = atoi(strtok_single(NULL, ",")); // Gets Fix status
 
-    // grap GPS run status
-    char *tok = strtok(gpsbuffer, ",");
-    
-    if (! tok) return false;
-    *run = atoi(tok);
+  *date = atof(strtok_single(NULL, ",")); // Gets UTC date and time
 
-    // grab fix status
-    tok = strtok(NULL, ",");
-    if (! tok) return false;
-    *fix = atoi(tok);
+  char *lat = atof(strtok_single(NULL, ",")); // Gets latitude
 
-    // grab date
-    char *datep = strtok(NULL, ",");
-    if (! datep) return false;
-    *date = atof(datep);
+  char *lon = atof(strtok_single(NULL, ",")); // Gets longitude
 
-    // grab the latitude
-    char *latp = strtok(NULL, ",");
-    if (! latp) return false;
+  *altitude = atof(strtok_single(NULL, ",")); // Gets altitude
 
-    // grab longitude
-    char *longp = strtok(NULL, ",");
-    if (! longp) return false;
+  *speed_kph = atof(strtok_single(NULL, ",")); // Gets speed
 
-    *lat = atof(latp);
-    *lon = atof(longp);
+  *heading = atof(strtok_single(NULL, ",")); // Gets heading
 
-    // only grab altitude if needed
-    if (altitude != NULL) {
-      // grab altitude
-      char *altp = strtok(NULL, ",");
-      if (! altp) return false;
+  *fix_mode = atoi(strtok_single(NULL, ",")); // Gets fix mode
 
-      *altitude = atof(altp);
-    }
+  strtok_single(NULL, ","); // Reserved 1
 
-    // only grab speed if needed
-    if (speed_kph != NULL) {
-      // grab the speed in km/h
-      char *speedp = strtok(NULL, ",");
-      if (! speedp) return false;
+  *hdop = atof(strtok_single(NULL, ",")); // Gets HDOP
 
-      *speed_kph = atof(speedp);
-    }
+  *pdop = atof(strtok_single(NULL, ",")); // Gets PDOP
 
-    // only grab heading if needed
-    if (heading != NULL) {
+  *vdop = atof(strtok_single(NULL, ",")); // Gets VDOP
 
-      // grab the heading in knots
-      char *coursep = strtok(NULL, ",");
-      if (! coursep) return false;
+  strtok_single(NULL, ","); // Reserved 2
 
-      *heading = atof(coursep);
-    }
+  *gps_view = atoi(strtok_single(NULL, ",")); // Gets GPS in view
 
-    if (fix_mode != NULL) {
+  *gns_used = atoi(strtok_single(NULL, ",")); // Gets GNSS used
 
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      if (! tok) return false;
+  *gns_view = atoi(strtok_single(NULL, ",")); // Gets GLONASS in view
 
-      *fix_mode = atoi(tok);
-    }
+  strtok_single(NULL, ","); // Reserved 3
 
-    /////Fixmode repetido
-   /////Además aquí, en el primer espacio reservado fue donde las funciones epezaron a fallar
-   //// tok = strtok(NULL, ","); parece no buscar espacios en balncos si nos más bien saltar los vacios en busca de otro elemento
+  *cno = atoi(strtok_single(NULL, ",")); // Gets C/N0 max
 
-    if (hdop != NULL) {
+  *hpa = atof(strtok_single(NULL, ",")); // Gets HPA
 
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      if (! tok) return false;
+  *vpa = atof(strtok_single(NULL, ",")); // Gets VPA
 
-      *hdop = atof(tok);
-    }
-
-    if (pdop != NULL) {
-
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      if (! tok) return false;
-
-      *pdop = atof(tok);
-    }
-
-    if (vdop != NULL) {
-
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      if (! tok) return false;
-
-      *vdop = atof(tok);
-    }
-
-    if (gps_view != NULL) {
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      if (! tok) return false;  
-      *gps_view = atoi(tok);
-    }
-
-    if (gns_used != NULL) {
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      if (! tok) return false;
-      *gns_used = atoi(tok);
-    }
-
-    if (hpa != NULL) {
-
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      //if (! tok) return false; //Estos curiosamente desfasaban los resultados
-
-      *hpa = atoi(tok);
-    }
-
-    if (vpa != NULL) {
-
-      // grab the  in knots
-      tok = strtok(NULL, ",");
-      //if (! tok) return false; //Estos curiosamente desfasaban los resultados
-
-      *vpa = atoi(tok);
-    }
-    
-  }
   return true;
 }
 
