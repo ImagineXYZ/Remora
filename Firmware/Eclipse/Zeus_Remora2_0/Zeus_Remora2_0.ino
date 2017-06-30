@@ -8,7 +8,7 @@
 #include <ESP8266_XYZ.h>
 #include "wiring_private.h" //pinPeripheral
 
-#define Debug 1
+#define Debug 0
 #define DebugESP 0//Debug por ESP8266
 
 //==========================Defines===============================
@@ -30,16 +30,11 @@
 //LED de prueba
 #define LED 25
 
-//=========================WDT==============================
+//=========================WDT y RAM==============================
 const uint8_t periodoWDT = 11;
-
-//=========================RAM Disponible==============================
-//Rutina para calcular el espacio de memoria Ram disponible
 extern "C" char *sbrk(int i);
-int Ram () {
-	char stack_dummy = 0;
-	return &stack_dummy - sbrk(0);
-}
+uint32_t conteodeciclo = 0;
+uint32_t conteogeneral = 0;
 
 //=========================SERCOM==============================
 //Se instancian los puertos SPI y UART a partir de los SERCOM del SAMD21
@@ -69,8 +64,10 @@ long t1;
 long t2 = 0;
 
 //Auxiliares para el manejo de memoria durante la subida de datos
-String line;//Variable para almacenar temporalmente los datos de la SD en memoria
-signed long pos_a = 0;//Última posición en el archivo log.txt que se subió con respuesta del servidor 200
+String line;//Variable para almacenar temporalmente los datos de la SD en memoria y antes del servicio GPRS
+signed long pos_i = 0;//posición inicial del ultimo archivo log.txt que se subió con respuesta del servidor 200
+signed long pos_f = 0;//posición final del ultimo archivo log.txt que se subió con respuesta del servidor 200
+
 
 //Variables de conteo para reset del FONA
 //GSM
@@ -89,8 +86,8 @@ vector<Data> test_points;
 //------------------------------ CONFIGURABLES POR SMS--------------------------------------
 //Variables para parámetros umbrales
 float los = 0.005f;
-uint16_t time_trig = 90;
-uint8_t delay_sec = 1;
+uint16_t time_trig = 90;//
+uint8_t delay_sec = 15;
 bool em_mode = 0;//Por ahora no se utiliza
 
 //Variables para parámetros de red celular
@@ -630,15 +627,21 @@ String get_gps() {
 	double date;
 	bool run,fix;
 	uint8_t fix_mode,gps_view,gns_used;
-	float fuel = 1200.00;
-	int Motor = 1;
-
+	//{"ID":"XYZ001","fecha":20160914234855,"lat":-90.937282,"lon":-180.059265,"vel":999.99,"alt":10018.900,"Head":279.10,"RunStatus":1,"Fix":1,"FixMode":1,"HDOP":10.2,"PDOP":10.8,"VDOP":10.9,"GPSView":99,"GNSS_used":99,"HPA":9999.9,"VPA":9999.9
 	boolean gps_success = fona.getGPS(&date, &curr_lat, &curr_lon, &speed_kph, &heading, &altitude,&run,&fix, &fix_mode,&hdop, &pdop, &vdop, &gps_view, &gns_used, &hpa, &vpa);
 	String msg = "";
 	if (gps_success) {
 		ledbugging(1,1);
 		//Todos los datos del GPS
-		msg = "{\"ID\":\"" + id + "\",\"fecha\":" + String(date, 0) + ",\"lat\":" + String(curr_lat, 6) + ",\"lon\":" + String(curr_lon, 6) + ",\"vel\":" + String(speed_kph,2) + ",\"alt\":" + String(altitude,3) + ",\"Head\":" + String(heading,2) + ",\"RunStatus\":" +  String(run) + ",\"Fix\":" +  String(fix) + ",\"FixMode\":" +  String(fix_mode) + ",\"HDOP\":" +  String(hdop,2) + ",\"PDOP\":" +  String(pdop,2)+ ",\"VDOP\":" +  String(vdop,2) + ",\"GPSView\":" +  String(gps_view) + ",\"GNSS_used\":" +  String(gns_used) + ",\"HPA\":" +  String(hpa,1)  + ",\"VPA\":" +  String(vpa,1) + ",\"fuel\":" + String(fuel) + ",\"Motor\":" + String(Motor) + ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, curr_lon));
+		msg = "{\"ID\":\"" + id + "\",\"fecha\":" + String(date, 0) + ",\"lat\":" + String(curr_lat, 6) + ",\"lon\":" + String(curr_lon, 6) + ",\"vel\":" + String(speed_kph,2) + ",\"alt\":" + String(altitude,3) + ",\"Head\":" + String(heading,2) + ",\"RunStatus\":" +  String(run) + ",\"Fix\":" +  String(fix) + ",\"FixMode\":" +  String(fix_mode) + ",\"HDOP\":" +  String(hdop,2) + ",\"PDOP\":" +  String(pdop,2)+ ",\"VDOP\":" +  String(vdop,2) + ",\"GPSView\":" +  String(gps_view) + ",\"GNSS_used\":" +  String(gns_used) + ",\"HPA\":" +  String(hpa,1)  + ",\"VPA\":" +  String(vpa,1);
+		if(Debug){
+			Serial.println(msg);
+		}
+
+		if(DebugESP){
+			esp.println(msg);
+		}
+
 		NoGPSCount = 0;
 		return msg;
 	}
@@ -660,23 +663,34 @@ String get_gps() {
 	}
 }
 
+/*void clearchar(){
+	for (uint v = 0; v <= (sizeof(url_char) - 1); v++){
+		url_char[v] = 0;
+	}
+	for (uint w = 0; w <= (sizeof(data) - 1); w++){
+		url_char[w] = 0;
+	}
+}*/
+
 //Realiza post al servidor
 int fona_post(String url, String msg) {
 
-	//Variablees necesarias para POST
+	//Variables necesarias para POST
 	uint16_t statuscode;
 	int16_t msg_len;
 
 	if (msg.indexOf("ERROR") == -1) {
+		//clearchar();
 
+		char url_char[46] = ""; //length +1 //direccion del POST
+		char data[380] = "";//Espacio reservado para el JSON
 
-		char url_char[46]; //length +1
-		char data[300];
-
-		//{"ID":XYZ001,"fecha":20170523230402,"lat":99.937687,"lon":-144.061256,"vel":100.09,"alt":10209.80,"Head":258.50,"RunStatus":1,"Fix":1,"FixMode":1,"HDOP":10.20,"PDOP":10.50,"VDOP":10.90,"GPSView":12,"GNSS_used":15,"HPA":39.0,"VPA":10.0,"fuel":0000.00,"Motor":1,"QuadTree":0,"RSSI":"18"}		//{"ID":"XYZ001","fecha":"20160914234855","lat":"-90.937282","lon":"-180.059265","vel":"999.99","alt":"10018.9","Head":"279.10","RunStatus":"1","Fix":"1","FixMode":"1","HDOP":"10.2","PDOP":"10.8","VDOP":"10.9","GPSView":"99","GNSS_used":"99","GNSS_view":"99","HPA":"9999.9","VPA":"9999.9","fuel":"0000.00","Motor":"1","Quadtree":"1","RSSI":"18"}
+		rastreoRAM("ChartoArray", Ram());
+		//{"ID":"XYZ001","fecha":20160914234855,"lat":-90.937282,"lon":-180.059265,"vel":999.99,"alt":10018.900,"Head":279.10,"RunStatus":1,"Fix":1,"FixMode":1,"HDOP":10.2,"PDOP":10.8,"VDOP":10.9,"GPSView":99,"GNSS_used":99,"HPA":9999.9,"VPA":9999.9,"fuel":0000.00,"Motor":1,"Quadtree":1,"RSSI":18,"RAM":30000}
 		url.toCharArray(url_char, 46); //length +1
-		msg.toCharArray(data, 300);
-
+		rastreoRAM("ChartoArray1", Ram());
+		msg.toCharArray(data, 380);
+		rastreoRAM("ChartoArray2", Ram());
 		uint8_t i = 0;
 		uint8_t estado = Net_Status();
 
@@ -697,8 +711,11 @@ int fona_post(String url, String msg) {
 			estado = Net_Status();
 		}
 		delay(1000);
+
+		//rastreoRAM("Pre-post", Ram());
 		fona.HTTP_POST_start(url_char, F("application/json"), (uint8_t *) data, strlen(data), &statuscode, (uint16_t *)&msg_len);
 		fona.HTTP_POST_end();
+		//rastreoRAM("Posted", Ram());
 		if (Debug) {
 			Serial.println(statuscode);
 		}
@@ -709,6 +726,7 @@ int fona_post(String url, String msg) {
 				Serial.println(msg);
 			}
 			write_file("updat.txt", msg);		//Escritura en SD
+			//rastreoRAM("Saveupadat", Ram());
 		}
 
 		else {
@@ -718,6 +736,7 @@ int fona_post(String url, String msg) {
 			}
 			msg = msg + "   Errror code: " + String(statuscode);
 			write_file("nonupdat.txt", msg);		//Escritura en SD
+			//rastreoRAM("Savenonupadat", Ram());
 		}
 		return statuscode;
 	}
@@ -746,17 +765,23 @@ void assert_write(String str) {
 			esp.println(String(elapsed) + " " + String(abs(curr_lat - last_lat)) + " " + String(abs(curr_lon - last_lon)));
 		}
 		if (( abs(curr_lat - last_lat) > los || abs(curr_lon - last_lon) > los) || elapsed > time_trig) {
+			//rastreoRAM("RompeUmbral", Ram());
 			last_lat = curr_lat;
 			last_lon = curr_lon;
 			t2 = millis();
+			test_points = remora_gis.nearest_points(curr_lat,curr_lon,los);
+			//rastreoRAM("VectorQT", Ram());
+			//funcion motor
+			//funcion gasolina
+			float fuel = 1200.00;
+			int Motor = 1;
+			//{"ID":"XYZ001","fecha":20160914234855,"lat":-90.937282,"lon":-180.059265,"vel":999.99,"alt":10018.900,"Head":279.10,"RunStatus":1,"Fix":1,"FixMode":1,"HDOP":10.2,"PDOP":10.8,"VDOP":10.9,"GPSView":99,"GNSS_used":99,"HPA":9999.9,"VPA":9999.9,"fuel":0000.00,"Motor":1,"Quadtree":1
+			str = str + ",\"fuel\":" + String(fuel) + ",\"Motor\":" + String(conteogeneral) + ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, curr_lon));
+			//str = str + ",\"fuel\":" + String(fuel) + ",\"Motor\":" + String(Motor) + ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, curr_lon));
 			write_file("log.txt", str);
+			//rastreoRAM("SaveLog", Ram());
 			Service_available();
-
-			/*long t3 = millis();
-			test_points = remora_gis.nearest_points(curr_lat, curr_lon, los);
-			long t4 = millis();
-			Serial.print("Tiempo ejec. pts cercanos: ");
-			Serial.println(t4-t3);*/
+			conteogeneral++;//Borrar después de conteo
 		}
 	}
 	else{
@@ -767,8 +792,8 @@ void assert_write(String str) {
 //Analiza si hay servicio disponible para enviar datos a la nube
 void Service_available(){
 	uint8_t NetStatus = Net_Status();
+	//rastreoRAM("NETStatus", Ram());
 	uint8_t SignalStatus = fona.getRSSI();
-
 	//Consulta si la señal GSM es suficiente para transmisiones
 	if (Debug){
 		Serial.print(F("Service available: "));
@@ -779,6 +804,7 @@ void Service_available(){
 		if (Debug){
 			Serial.println(F("Anti Jamming GSM with Service"));
 			anti_jam(NetStatus);//antijamming para gsm: Me preocupa que entre muy rápido a esta rutina y nunca se registre en la red por causa del reset constante
+			//rastreoRAM("AntiJam GSM", Ram());
 		}
 	}
 
@@ -788,12 +814,12 @@ void Service_available(){
 		if (sms_num > 0) {
 			process_sms(sms_num);
 		}
-
+		rastreoRAM("SearchJSONline", Ram());
 		//Load de la última posición del logger que se subió correctamente
-		pos_a = load_json_line();
-
-		if (pos_a == -1){
-			Serial.print(F("Error leyendo pos_a"));
+		pos_i = load_json_line();
+		rastreoRAM("LoadJSONline", Ram());
+		if (pos_i == -1){
+			Serial.print(F("Error leyendo pos_i"));
 		}
 		else{
 			upload_data();
@@ -804,7 +830,6 @@ void Service_available(){
 //Logica para enviar línea por línea a la nube... improvement: enviar paquetes
 void upload_data(){
 
-	String json;
 	File log_file = SD.open("log.txt");
 	if (!log_file)
 	{
@@ -818,8 +843,8 @@ void upload_data(){
 		if (Debug){
 			Serial.print(F("Size: "));
 			Serial.println(file_size);
-			Serial.print(F("pos_a: "));
-			Serial.println(pos_a);
+			Serial.print(F("pos_i: "));
+			Serial.println(pos_i);
 		}
 
 		if (file_size == 0){
@@ -828,35 +853,40 @@ void upload_data(){
 			}
 		}
 		else {
-
-			log_file.seek(pos_a);
-			json = log_file.readStringUntil('\n');
-
-			signed long temp = log_file.position();
+			rastreoRAM("Seakposi", Ram());
+			log_file.seek(pos_i);
+			rastreoRAM("foundposi", Ram());
+			line = log_file.readStringUntil('\n');////Posible leak de RAM
+			rastreoRAM("readuntil", Ram());
+			pos_f = log_file.position();
+			rastreoRAM("posf", Ram());
 			log_file.close();
-
-			json.trim();
-			json = json + ",\"RSSI\":"+ String(fona.getRSSI())+"}";
+			line.trim();
+			rastreoRAM("JSONLoaded", Ram());
+			line = line + ",\"RSSI\":"+ String(fona.getRSSI())+ ",\"RAM\":"+ String(Ram())+"}";
+			rastreoRAM("LineForming", Ram());
 			if (Debug){
-				Serial.println(json);
+				Serial.println(line);
 			}
 
-			if (( fona_post(post_url, json)) == 200){
+			if (( fona_post(post_url, line)) == 200){
 				ledbugging(2,1);
 				if (Debug){
 					Serial.println(F("Nueva posicion en cursor"));
 				}
-				pos_a = temp;
+				pos_i = pos_f;
 				Trunc_file("jsonline.txt");
-				write_file("jsonline.txt",String(pos_a));
+				write_file("jsonline.txt",String(pos_i));
+				//rastreoRAM("SaveJSONline", Ram());
 
-				if (file_size == pos_a){
+				if (file_size == pos_i){
 					if (Debug){
 						Serial.println(F("Fin del archivo. Trunc log..."));
 					}
 					Trunc_file("jsonline.txt");
 					write_file("jsonline.txt","0");
 					Trunc_file("log.txt");
+					//rastreoRAM("Emptylog", Ram());
 				}
 				else{
 					GSMCount = TryGSM;//Se coloca éste umbral para evitar una recursión y para que el próximo ciclo del loop llame a upload inmediatamente
@@ -900,7 +930,6 @@ void load_map(){
 }
 
 //=========================WDT==============================//
-
 //Sincronización del WDT
 static void WDTsync() {
 	while (WDT->STATUS.bit.SYNCBUSY == 1);
@@ -949,6 +978,24 @@ void setupWDT(uint8_t period) {
 	WDTsync(); // Sincronizar para no perder configuración
 }
 
+//=========================RAM Disponible==============================
+//Rutina para calcular el espacio de memoria Ram disponible
+int Ram () {
+	char stack_dummy = 0;
+	return &stack_dummy - sbrk(0);
+}
+
+void rastreoRAM(String donde, int valor){
+	String data = String (conteodeciclo) + " " + donde + ": " + String(valor);
+	if (Debug){
+		Serial.print(conteodeciclo);
+		Serial.print(" " + donde + ": ");
+		Serial.println(valor);
+	}
+	write_file("ramtrack.txt",data);
+	conteodeciclo++;
+}
+
 //===========================================================================================//
 void setup() {
 	pinMode(LED, OUTPUT);
@@ -956,7 +1003,7 @@ void setup() {
 	delay(1000);
 	digitalWrite(LED, LOW);
 	delay(1000);
-
+	//rastreoRAM("Inicio", Ram());
 	if (Debug){
 		Serial.begin(9600);
 		while (! Serial);
@@ -978,11 +1025,21 @@ void setup() {
 		Read_file("log.txt");
 		Read_file("nonupdat.txt");
 		Read_file("updat.txt");
+		Read_file("ramtrack.txt");
+		Read_file("srv.txt");
 	}
 
 	//Trunc_file("log.txt");
 	//Trunc_file("nonupdat.txt");
 	//Trunc_file("updat.txt");
+	//Trunc_file("ramtrack.txt");
+	//Trunc_file("srv.txt");
+
+	//write_file("srv.txt","S");
+	//write_file("srv.txt","H");
+	//write_file("srv.txt","imaginexyz-genuinoday.herokuapp.com/gps/today");
+	//Read_file("srv.txt");
+
 
 	int8_t sms_num = fona.getNumSMS();
 	if (sms_num > 0) {
@@ -1003,57 +1060,35 @@ void setup() {
 		esp.println(F("======SETUP LISTO======"));
 	}
 
+	//rastreoRAM("Setup", Ram());
 	//La Sabana
-	//remora_gis.insert(-84.110250f, 9.933845f, 0x1E1);
-	//remora_gis.insert(-84.108877f, 9.938325f, 0x2DF);
-	//remora_gis.insert(-84.098514f, 9.937848f, 0x2D4);
-	//remora_gis.insert(-84.098266f, 9.935712f, 0x2D2);
-	//remora_gis.insert(-84.099593f, 9.935712f, 0x2D6);
-	//remora_gis.insert(-84.099605f, 9.932733f, 0x2D2);
+	remora_gis.insert(-84.110250f, 9.933845f, 0x1E1);
+	remora_gis.insert(-84.108877f, 9.938325f, 0x2DF);
+	remora_gis.insert(-84.098514f, 9.937848f, 0x2D4);
+	remora_gis.insert(-84.098266f, 9.935712f, 0x2D2);
+	remora_gis.insert(-84.099593f, 9.935712f, 0x2D6);
+	remora_gis.insert(-84.099605f, 9.932733f, 0x2D2);
 
 	//Office
-	remora_gis.insert(-84.061049f,9.937767f,0x1F);
+	remora_gis.insert(-84.061049f,9.937767f,0xFFF);
 
 	//WDT
 	setupWDT( periodoWDT ); //Inicialización del WDT
+	//rastreoRAM("Quadtree+WDT", Ram());
 }
 
 void loop() {
+	rastreoRAM("Loop", Ram());
 	resetWDT();
-	/*if (Debug) {
-		Serial.print("freeMemory()=");
-		Serial.println(Ram());
-	}
 
-	if (DebugESP) {
-		esp.print("freeMemory()=");
-		esp.println(String(Ram()));
-	}*/
 	t1 = millis();//agregar t1 para tomar datos de tiempo y romper umbral
 
 	//Obtener datos de ubicación
 	String status_str = get_gps();
-
-	if(point_in_area(test_points, curr_lat, curr_lon)){
-		if (Debug) {
-			Serial.print("Violacion");
-		}
-		if (DebugESP) {
-			esp.print("Violacion");
-		}
-	}
-	else {
-		if (Debug) {
-			Serial.print("Bajo Control");
-		}
-		if (DebugESP) {
-			esp.print("Bajo Control");
-		}
-	}
-
-	/*if (status_str != "ERROR") {
+	//rastreoRAM("GetGPS", Ram());
+	if (status_str != "ERROR") {
 		assert_write(status_str); //Determinar si se ha roto algún umbral
-	}*/
+	}
 
 	//Rutina para realizar un reset al FONA en caso de que tenga señal y no esté registrado en la red
 	GSMCount++;
@@ -1065,6 +1100,7 @@ void loop() {
 	else if (Debug){
 		int cuenta = 0;
 		while (cuenta <= delay_sec){
+			resetWDT();
 			Serial.print(F("."));
 			delay(1000);
 			cuenta++;
@@ -1072,8 +1108,12 @@ void loop() {
 		Serial.println(F("."));
 	}
 	else{
-		delay(delay_sec * 1000);
+		for(int x = 0; x < delay_sec;x++){
+			delay(1000);
+			resetWDT();
+		}
 	}
+	conteodeciclo = 0;////////////////////////////////////Comment after RAM tracking
 }
 
 

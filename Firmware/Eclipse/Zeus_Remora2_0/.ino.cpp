@@ -2,7 +2,7 @@
 //This is a automatic generated file
 //Please do not modify this file
 //If you touch this file your change will be overwritten during the next build
-//This file has been generated on 2017-05-24 12:31:13
+//This file has been generated on 2017-06-20 10:32:49
 
 #include "Arduino.h"
 #include "Arduino.h"
@@ -13,7 +13,6 @@
 #include <quadtree.h>
 #include <ESP8266_XYZ.h>
 #include "wiring_private.h"
-int Ram () ;
 void SERCOM1_Handler();
 void SERCOM2_Handler();
 void fona_setup() ;
@@ -45,6 +44,8 @@ void resetWDT() ;
 void systemReset() ;
 void disableWDT();
 void setupWDT(uint8_t period) ;
+int Ram () ;
+void rastreoRAM(String donde, int valor);
 void setup() ;
 void loop() ;
 
