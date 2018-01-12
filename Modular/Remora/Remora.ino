@@ -36,18 +36,18 @@ Nmea gpsData;
 long t1 = 0;
 long t2 = 0;
 
-//Definición de función de carga para pasar a //comms
+//Definición de función de carga para pasar a comms
 //void uploadData();
 
 Persistence storage;
 Quadtree remoraGis;
 vector<Data> testPoints; //Estructura de datos para determinación de zona más cercana
-//Comms //comms;
+Comms comms;
 Watchdog wdt;
 
 void SERCOM2_Handler()
 {
-	//comms.Serial2.IrqHandler();
+	comms.Serial2.IrqHandler();
 }
 
 //=========================Para el LED==============================//
@@ -107,7 +107,7 @@ void assertWrite(String str)
 			//str = str + ",\"fuel\":" + String(fuel) + ",\"Motor\":" + String(Motor) + ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, currentLon));
 			storage.writeFile("log.txt", str);
 			DEBUG_RAM("SaveLog");
-			//comms.uploadIfServiceAvailable();
+			comms.uploadIfServiceAvailable();
 //			generalCount++;			//Borrar después de conteo
 		}
 	}
@@ -152,7 +152,7 @@ void uploadData()
 			line.trim();
 			DEBUG_RAM("JSONLoaded");
 
-			if ((false))//comms.post(storage.postUrl, line)) == 200)
+			if ((comms.post(storage.postUrl, line)) == 200)
 			{
 				ledbugging(2, 1);
 				DEBUG_PRINT_LN(F("Nueva posicion en cursor"));
@@ -171,7 +171,7 @@ void uploadData()
 				}
 				else
 				{
-					//comms.resetGsmCount();//Se coloca éste umbral para evitar una recursión y para que el próximo ciclo del loop llame a upload inmediatamente
+					comms.resetGsmCount();//Se coloca éste umbral para evitar una recursión y para que el próximo ciclo del loop llame a upload inmediatamente
 				}
 			}
 			else
@@ -214,45 +214,27 @@ void loadMap()
 void setup()
 {
 	pinMode(LED, OUTPUT);
-	digitalWrite(LED, HIGH);
-	delay(1000);
-	digitalWrite(LED, LOW);
-	delay(1000);
+//	digitalWrite(LED, HIGH);
+//	delay(1000);
+//	digitalWrite(LED, LOW);
+//	delay(1000);
 
 	DEBUG_PRINT_SETUP()
+	DEBUG_ESP_SETUP();
 
-	digitalWrite(LED, HIGH);
-	delay(1000);
-	digitalWrite(LED, LOW);
-	delay(1000);
-//	DEBUG_ESP_SETUP();
+	DEBUG_PRINT_LN(F("ESP F"));
 
-//	DEBUG_PRINT_LN(F("ESP F"));
-
-	digitalWrite(LED, HIGH);
-	delay(1000);
-	digitalWrite(LED, LOW);
-	delay(1000);
 	remoraGis = Quadtree();
-	Serial.println("Prueba quad");
-//	DEBUG_PRINT_PRETTY(F("Quad F"));
-
 	storage = Persistence(100);
-//	DEBUG_PRINT_PRETTY(F("Persistence F"));
-
-	digitalWrite(LED, HIGH);
-	delay(1000);
-	digitalWrite(LED, LOW);
-	delay(1000);
 	Serial.println("Prueba comms");
-	//comms = Comms(storage, &uploadData);
+	comms = Comms(storage, &uploadData);
 	//wdt = Watchdog(11);
 //	DEBUG_PRINT_PRETTY(F("Comms F"));
 
-	digitalWrite(LED, HIGH);
-	delay(1000);
-	digitalWrite(LED, LOW);
-	delay(1000);
+//	digitalWrite(LED, HIGH);
+//	delay(1000);
+//	digitalWrite(LED, LOW);
+//	delay(1000);
 
 //	DEBUG_RAM("Inicio");
 
@@ -273,7 +255,7 @@ void setup()
 	//write_file("srv.txt","imaginexyz-genuinoday.herokuapp.com/gps/today");
 	//Read_file("srv.txt");
 
-	//comms.checkSms();
+	comms.checkSms();
 
 	//Cargar parámetros configurables
 	storage.loadDeviceConfig();
@@ -306,7 +288,7 @@ void loop()
 	t1 = millis();	//agregar t1 para tomar datos de tiempo y romper umbral
 
 	//Obtener datos de ubicación
-	String statusString = ""; //comms.getNmea(&gpsData);
+	String statusString = comms.getNmea(&gpsData);
 	DEBUG_RAM("GetGPS");
 	if (statusString != "ERROR")
 	{
@@ -314,20 +296,20 @@ void loop()
 	}
 
 	//Rutina para realizar un reset al FONA en caso de que tenga señal y no esté registrado en la red
-	//comms.setGsmCount(//comms.getGsmCount() + 1);
-//	if (comms.getGsmCount() >= //comms.tryGsm)
-//	{
-//		//comms.setGsmCount(0);
-//		//comms.uploadIfServiceAvailable(); //No solo anti jam para gsm sino que si hay señal pero no hay GPS sube los datos
-//	}
-//	else
-//	{
-//		for (int x = 0; x < storage.delayTime; x++)
-//		{
-//			delay(1000);
-//			//wdt.resetWDT();
-//		}
-//	}
+	comms.setGsmCount(comms.getGsmCount() + 1);
+	if (comms.getGsmCount() >= comms.tryGsm)
+	{
+		comms.setGsmCount(0);
+		comms.uploadIfServiceAvailable(); //No solo anti jam para gsm sino que si hay señal pero no hay GPS sube los datos
+	}
+	else
+	{
+		for (int x = 0; x < storage.delayTime; x++)
+		{
+			delay(1000);
+			//wdt.resetWDT();
+		}
+	}
 	int cuenta = 0;
 	while (cuenta <= storage.delayTime)
 	{

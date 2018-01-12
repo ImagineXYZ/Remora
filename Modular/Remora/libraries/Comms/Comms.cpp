@@ -13,15 +13,15 @@ Comms::Comms(){
 }
 
 Comms::Comms(Persistence &persistence, upload_t function){
-	fonaSerial = &Serial2;
 	DEBUG_PRINT_LN("Check 0");
+	fonaSerial = &Serial2;
 	storage = persistence;
 	uploadData = function;
 
 	DEBUG_PRINT_LN("Check 1");
 
 	//Se inicia comunicación UART/SPI/I2C (DEBEN IR ANTES QUE pinPeripheral)
-//	fonaSerial->begin(4800);
+	fonaSerial->begin(4800);
 
 	DEBUG_PRINT_LN("Check 2");
 
