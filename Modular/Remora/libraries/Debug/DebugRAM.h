@@ -13,7 +13,7 @@
 #include <DebugUtils.h>
 #include <Persistence.h>
 
-#ifdef DEBUG
+#ifdef DEBUG_RAM
 
 extern "C" char *sbrk(int i); //Para RAM
 uint32_t cycleCount = 0;
@@ -46,6 +46,8 @@ inline int freeRam()
 	cycleCount++;
 #else
 #define DEBUG_RAM(donde)
+#define DEBUG_RAM_RESET_CYCLE()
+#define DEBUG_RAM_SETUP(storage)
 #endif
 
 #endif

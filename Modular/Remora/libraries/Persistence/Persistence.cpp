@@ -9,10 +9,15 @@ Remora storage module source file.
 #include <Persistence.h>
 
 Persistence::Persistence(){
+
+}
+
+Persistence::Persistence(uint8_t initTime){
+	DEBUG_PRINT_LN(F("SD 0"));
 	//Se establece comunicación con la SD
 	while (!SD.begin(SD_CS))
 	{
-		delay(100);
+		delay(initTime);
 	}
 	DEBUG_PRINT_LN(F("SD lista"));
 }

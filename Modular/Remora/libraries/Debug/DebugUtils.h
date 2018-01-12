@@ -32,10 +32,13 @@
 
 #ifdef DEBUG
 //Serial port config for ARM M0 (SAMD21)
-#define Serial SERIAL_PORT_USBVIRTUAL //Puerto USB SerialUSB
+#if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+  // Required for Serial on Zero based boards
+  #define Serial SERIAL_PORT_USBVIRTUAL
+#endif
 #define DEBUG_PRINT_SETUP() \
-	Serial.begin(9600); \
-	while(!Serial); \
+	Serial.begin(115200); \
+	while(!Serial.available()){} \
 	Serial.println(F("======DEBUG======"));
 #define DEBUG_PRINT_PRETTY(str)    \
    Serial.print(millis());     \

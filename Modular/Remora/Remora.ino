@@ -1,13 +1,14 @@
 /*
-filename: Remora.ino
-author: Sergio Vargas
-date last modified: 05/01/2018
-platform: ARM M0 (SAMD21)
-Remora main functions source file.
-*/
+ filename: Remora.ino
+ author: Sergio Vargas
+ date last modified: 05/01/2018
+ platform: ARM M0 (SAMD21)
+ Remora main functions source file.
+ */
 
 #define DEBUG 1
-#define WDEBUG 1
+//#define DEBUG_RAM 1
+//#define WDEBUG 1
 #define SSID F("Javo")  	//Nombre de la red a la que se desea conectar
 #define PASS F("123456789") //Contraseña de la red
 
@@ -35,18 +36,18 @@ Nmea gpsData;
 long t1 = 0;
 long t2 = 0;
 
-//Definición de función de carga para pasar a comms
-void uploadData();
+//Definición de función de carga para pasar a //comms
+//void uploadData();
 
-Persistence storage = Persistence();
-Quadtree remoraGis = Quadtree();
+Persistence storage;
+Quadtree remoraGis;
 vector<Data> testPoints; //Estructura de datos para determinación de zona más cercana
-Comms comms = Comms(storage, &uploadData);
-Watchdog wdt = Watchdog(11);
+//Comms //comms;
+Watchdog wdt;
 
 void SERCOM2_Handler()
 {
-	comms.Serial2.IrqHandler();
+	//comms.Serial2.IrqHandler();
 }
 
 //=========================Para el LED==============================//
@@ -85,28 +86,28 @@ void assertWrite(String str)
 		DEBUG_PRINTT(F("Distancia recorrida: "));
 		DEBUG_PRINTT(F("Latitud: "));
 		DEBUG_PRINTT(abs(gpsData.lat - lastLat));
-		DEBUG_PRINTT(F(" Longitud: "));
-		DEBUG_ESP_LN(String(elapsed) + " " + String(abs(gpsData.lat - lastLat)) + " " + String(abs(gpsData.lon - lastLon)));
-		if (( abs(gpsData.lat - lastLat) > storage.lineOfSight || abs(gpsData.lon - lastLon) > storage.lineOfSight)
+		DEBUG_PRINTT(F(" Longitud: ")); DEBUG_ESP_LN(String(elapsed) + " " + String(abs(gpsData.lat - lastLat)) + " " + String(abs(gpsData.lon - lastLon)));
+		if (( abs(gpsData.lat - lastLat) > storage.lineOfSight
+				|| abs(gpsData.lon - lastLon) > storage.lineOfSight)
 				|| elapsed > storage.timeTrigger)
 		{
 			DEBUG_RAM("RompeUmbral");
 			lastLat = gpsData.lat;
 			lastLon = gpsData.lon;
 			t2 = millis();
-			testPoints = remoraGis.nearest_points(gpsData.lat, gpsData.lon, storage.lineOfSight);
+			testPoints = remoraGis.nearest_points(gpsData.lat, gpsData.lon,
+					storage.lineOfSight);
 			DEBUG_RAM("VectorQT");
 			//funcion motor
 			//funcion gasolina
 			float fuel = 1200.00;
 			//{"ID":"XYZ001","fecha":20160914234855,"lat":-90.937282,"lon":-180.059265,"vel":999.99,"alt":10018.900,"Head":279.10,"RunStatus":1,"Fix":1,"FixMode":1,"HDOP":10.2,"PDOP":10.8,"VDOP":10.9,"GPSView":99,"GNSS_used":99,"HPA":9999.9,"VPA":9999.9,"fuel":0000.00,"Motor":1,"Quadtree":1
-			str = str + ",\"fuel\":" + String(fuel)
-					+ ",\"QuadTree\":"
-					+ String(pointInArea(testPoints, gpsData.lat,gpsData.lon));
+			str = str + ",\"fuel\":" + String(fuel) + ",\"QuadTree\":"
+					+ String(pointInArea(testPoints, gpsData.lat, gpsData.lon));
 			//str = str + ",\"fuel\":" + String(fuel) + ",\"Motor\":" + String(Motor) + ",\"QuadTree\":" + String(point_in_area(test_points, curr_lat, currentLon));
 			storage.writeFile("log.txt", str);
 			DEBUG_RAM("SaveLog");
-			comms.uploadIfServiceAvailable();
+			//comms.uploadIfServiceAvailable();
 //			generalCount++;			//Borrar después de conteo
 		}
 	}
@@ -151,7 +152,7 @@ void uploadData()
 			line.trim();
 			DEBUG_RAM("JSONLoaded");
 
-			if ((comms.post(storage.postUrl, line)) == 200)
+			if ((false))//comms.post(storage.postUrl, line)) == 200)
 			{
 				ledbugging(2, 1);
 				DEBUG_PRINT_LN(F("Nueva posicion en cursor"));
@@ -170,7 +171,7 @@ void uploadData()
 				}
 				else
 				{
-					comms.resetGsmCount();//Se coloca éste umbral para evitar una recursión y para que el próximo ciclo del loop llame a upload inmediatamente
+					//comms.resetGsmCount();//Se coloca éste umbral para evitar una recursión y para que el próximo ciclo del loop llame a upload inmediatamente
 				}
 			}
 			else
@@ -217,10 +218,44 @@ void setup()
 	delay(1000);
 	digitalWrite(LED, LOW);
 	delay(1000);
-	DEBUG_RAM("Inicio");
 
-	DEBUG_PRINT_SETUP();
-	DEBUG_ESP_SETUP();
+	DEBUG_PRINT_SETUP()
+
+	digitalWrite(LED, HIGH);
+	delay(1000);
+	digitalWrite(LED, LOW);
+	delay(1000);
+//	DEBUG_ESP_SETUP();
+
+//	DEBUG_PRINT_LN(F("ESP F"));
+
+	digitalWrite(LED, HIGH);
+	delay(1000);
+	digitalWrite(LED, LOW);
+	delay(1000);
+	remoraGis = Quadtree();
+	Serial.println("Prueba quad");
+//	DEBUG_PRINT_PRETTY(F("Quad F"));
+
+	storage = Persistence(100);
+//	DEBUG_PRINT_PRETTY(F("Persistence F"));
+
+	digitalWrite(LED, HIGH);
+	delay(1000);
+	digitalWrite(LED, LOW);
+	delay(1000);
+	Serial.println("Prueba comms");
+	//comms = Comms(storage, &uploadData);
+	//wdt = Watchdog(11);
+//	DEBUG_PRINT_PRETTY(F("Comms F"));
+
+	digitalWrite(LED, HIGH);
+	delay(1000);
+	digitalWrite(LED, LOW);
+	delay(1000);
+
+//	DEBUG_RAM("Inicio");
+
 	storage.readFile("log.txt");
 	storage.readFile("nonupdat.txt");
 	storage.readFile("updat.txt");
@@ -238,7 +273,7 @@ void setup()
 	//write_file("srv.txt","imaginexyz-genuinoday.herokuapp.com/gps/today");
 	//Read_file("srv.txt");
 
-	comms.checkSms();
+	//comms.checkSms();
 
 	//Cargar parámetros configurables
 	storage.loadDeviceConfig();
@@ -246,8 +281,7 @@ void setup()
 	storage.loadServerConfig();
 	//loadMap();
 
-	DEBUG_PRINT_LN(F("======SETUP LISTO======"));
-	DEBUG_ESP_LN(F("======SETUP LISTO======"));
+	DEBUG_PRINT_LN(F("======SETUP LISTO======")); DEBUG_ESP_LN(F("======SETUP LISTO======"));
 
 	DEBUG_RAM("Setup");
 	//La Sabana
@@ -267,12 +301,12 @@ void setup()
 void loop()
 {
 	DEBUG_RAM("Loop");
-	wdt.resetWDT();
+	//wdt.resetWDT();
 
 	t1 = millis();	//agregar t1 para tomar datos de tiempo y romper umbral
 
 	//Obtener datos de ubicación
-	String statusString = comms.getNmea(&gpsData);
+	String statusString = ""; //comms.getNmea(&gpsData);
 	DEBUG_RAM("GetGPS");
 	if (statusString != "ERROR")
 	{
@@ -280,28 +314,27 @@ void loop()
 	}
 
 	//Rutina para realizar un reset al FONA en caso de que tenga señal y no esté registrado en la red
-	comms.setGsmCount(comms.getGsmCount() + 1);
-	if (comms.getGsmCount() >= comms.tryGsm)
-	{
-		comms.setGsmCount(0);
-		comms.uploadIfServiceAvailable(); //No solo anti jam para gsm sino que si hay señal pero no hay GPS sube los datos
-	}
-	else
-	{
-		for (int x = 0; x < storage.delayTime; x++)
-		{
-			delay(1000);
-			wdt.resetWDT();
-		}
-	}
+	//comms.setGsmCount(//comms.getGsmCount() + 1);
+//	if (comms.getGsmCount() >= //comms.tryGsm)
+//	{
+//		//comms.setGsmCount(0);
+//		//comms.uploadIfServiceAvailable(); //No solo anti jam para gsm sino que si hay señal pero no hay GPS sube los datos
+//	}
+//	else
+//	{
+//		for (int x = 0; x < storage.delayTime; x++)
+//		{
+//			delay(1000);
+//			//wdt.resetWDT();
+//		}
+//	}
 	int cuenta = 0;
 	while (cuenta <= storage.delayTime)
 	{
-		wdt.resetWDT();
+		//wdt.resetWDT();
 		DEBUG_PRINTT(F("."));
 		delay(1000);
 		cuenta++;
 	}
-	DEBUG_PRINT_LN(F("."));
-	DEBUG_RAM_RESET_CYCLE(); ////////////////////////////////////Comment after RAM tracking
+	DEBUG_PRINT_LN(F(".")); DEBUG_RAM_RESET_CYCLE(); ////////////////////////////////////Comment after RAM tracking
 }

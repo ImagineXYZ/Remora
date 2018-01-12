@@ -12,7 +12,6 @@ Remora storage module header file.
 #include <Arduino.h>
 #include <SD.h>
 #include <SPI.h>
-#include "wiring_private.h" //pinPeripheral
 #include <DebugUtils.h>
 #include <DebugESP.h>
 
@@ -21,6 +20,7 @@ Remora storage module header file.
 class Persistence {
 public:
 	Persistence();
+	Persistence(uint8_t);
 	boolean writeFile(String, String);
 	void readFile(String);
 	boolean removeFile(String);
@@ -49,9 +49,9 @@ public:
 	long initFilePos = 0; //posición inicial del ultimo archivo log.txt que se subió con respuesta del servidor 200
 	long finalFilePos = 0; //posición final del ultimo archivo log.txt que se subió con respuesta del servidor 200
 
-	const char* deviceConfigFile = "";
-	const char* netConfigFile = "";
-	const char* serverConfigFile = "";
+	const char* deviceConfigFile = "config.txt";
+	const char* netConfigFile = "net.txt";
+	const char* serverConfigFile = "srv.txt";
 
 private:
 //	SD sdStorage;

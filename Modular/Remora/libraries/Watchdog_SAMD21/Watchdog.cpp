@@ -6,7 +6,7 @@
  SAMD21 watchdog timer library source file.
  */
 
-#include "../Watchdog_SAMD21/Watchdog.h"
+#include "Watchdog.h"
 
 Watchdog::Watchdog(){
 }

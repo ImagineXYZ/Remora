@@ -36,7 +36,7 @@ class Comms
 {
 public:
 	Comms();
-	Comms(Persistence persistence, upload_t function);
+	Comms(Persistence &persistence, upload_t function);
 	void setFonaStatus(int);
 	void checkSms();
 	int post(String, String);
@@ -50,14 +50,14 @@ public:
 	uint8_t getGsmCount();
 	Uart Serial2 = Uart(&sercom2, 3, 4, SERCOM_RX_PAD_1, UART_TX_PAD_0);
 	//NOTA a cambiar: Se utiliza el sercom2_alt debería ser el sercom0 mismos pines
-	const uint8_t tryGsm = 5; //Cantidad de intentos antes de reset general del FONA
-	const uint8_t tryGps = 15; //Cantidad de intentos antes del on/off en GPS del FONA
-	const uint8_t tryGprs = 5; //Cantidad de intentos antes del on/off en GPRS
+	static const uint8_t tryGsm = 5; //Cantidad de intentos antes de reset general del FONA
+	static const uint8_t tryGps = 15; //Cantidad de intentos antes del on/off en GPS del FONA
+	static const uint8_t tryGprs = 5; //Cantidad de intentos antes del on/off en GPRS
 
 private:
 	HardwareSerial *fonaSerial;
 	Adafruit_FONA fona = Adafruit_FONA(FONA_RST);
-	Persistence *storage;
+	Persistence storage;
 	Nmea nmeaData;
 	String deviceId;
 	uint8_t gsmCount = 0;

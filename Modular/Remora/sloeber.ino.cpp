@@ -2,11 +2,10 @@
 //This is a automatic generated file
 //Please do not modify this file
 //If you touch this file your change will be overwritten during the next build
-//This file has been generated on 2018-01-05 14:40:11
+//This file has been generated on 2018-01-12 11:23:53
 
 #include "Arduino.h"
 #define DEBUG 1
-#define WDEBUG 1
 #define SSID F("Javo")
 #define PASS F("123456789")
 #include <DebugUtils.h>

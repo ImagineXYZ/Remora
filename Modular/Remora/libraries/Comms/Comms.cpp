@@ -8,17 +8,28 @@ Remora communications module source file.
 
 #include "Comms.h"
 
-Comms::Comms(Persistence persistence, upload_t function){
-	storage = &persistence;
+Comms::Comms(){
+
+}
+
+Comms::Comms(Persistence &persistence, upload_t function){
 	fonaSerial = &Serial2;
+	DEBUG_PRINT_LN("Check 0");
+	storage = persistence;
 	uploadData = function;
 
+	DEBUG_PRINT_LN("Check 1");
+
 	//Se inicia comunicación UART/SPI/I2C (DEBEN IR ANTES QUE pinPeripheral)
-	fonaSerial->begin(4800);
+//	fonaSerial->begin(4800);
+
+	DEBUG_PRINT_LN("Check 2");
 
 	//Asigna funcionalidad SERCOM2 a pines 3(Rx) y 4(Tx)
 	pinPeripheral(3, PIO_SERCOM_ALT);
 	pinPeripheral(4, PIO_SERCOM_ALT);
+
+	DEBUG_PRINT_LN("Check 3");
 
 	pinMode(FONA_KEY, OUTPUT);
 	pinMode(FONA_NS, INPUT);
@@ -93,9 +104,9 @@ void Comms::checkSms()
 			DEBUG_PRINT_LN(F("SMS Config"));
 			fona.sendSMS(sender, (char *) "CFG ACK"); //Intentar confirmar al remitente
 			delay(100);
-			storage->removeFile(storage->deviceConfigFile);
-			storage->writeFile(storage->deviceConfigFile, String(replyBuffer));
-			storage->loadDeviceConfig();
+			storage.removeFile(storage.deviceConfigFile);
+			storage.writeFile(storage.deviceConfigFile, String(replyBuffer));
+			storage.loadDeviceConfig();
 		}
 		//Si el SMS inicia con NET
 		//if (replyBuffer[0] == 'N')
@@ -104,9 +115,9 @@ void Comms::checkSms()
 			DEBUG_PRINT_LN(F("SMS Net"));
 			fona.sendSMS(sender, (char *) "NET ACK"); //Intentar confirmar al remitente
 			delay(100);
-			storage->removeFile(storage->netConfigFile);
-			storage->writeFile(storage->netConfigFile, String(replyBuffer));
-			storage->loadNetConfig();
+			storage.removeFile(storage.netConfigFile);
+			storage.writeFile(storage.netConfigFile, String(replyBuffer));
+			storage.loadNetConfig();
 		}
 
 		//Si el SMS inicia con SRV
@@ -116,9 +127,9 @@ void Comms::checkSms()
 			DEBUG_PRINT_LN(F("SMS Server"));
 			fona.sendSMS(sender, (char *) "SRV ACK"); //Intentar confirmar al remitente
 			delay(100);
-			storage->removeFile(storage->serverConfigFile);
-			storage->writeFile(storage->serverConfigFile, String(replyBuffer));
-			storage->loadServerConfig();
+			storage.removeFile(storage.serverConfigFile);
+			storage.writeFile(storage.serverConfigFile, String(replyBuffer));
+			storage.loadServerConfig();
 		}
 
 		delay(200);
@@ -352,7 +363,7 @@ int Comms::post(String url, String msg)
 		{
 			DEBUG_PRINTT(F("POST: "));
 			DEBUG_PRINT_LN(msg);
-			storage->writeFile("updat.txt", msg);		//Escritura en SD
+			storage.writeFile("updat.txt", msg);		//Escritura en SD
 //			DEBUG_RAM("Saveupadat");
 		}
 
@@ -361,7 +372,7 @@ int Comms::post(String url, String msg)
 			DEBUG_PRINTT(F("Error de conexion: "));
 			DEBUG_PRINT_LN(msg);
 			msg = msg + "   Errror code: " + String(statusCode);
-			storage->writeFile("nonupdat.txt", msg);		//Escritura en SD
+			storage.writeFile("nonupdat.txt", msg);		//Escritura en SD
 //			DEBUG_RAM("Savenonupadat");
 		}
 		return statusCode;
@@ -392,9 +403,9 @@ void Comms::uploadIfServiceAvailable()
 		checkSms();
 //		DEBUG_RAM("SearchJSONline", freeRam());
 		//Load de la última posición del logger que se subió correctamente
-		storage->initFilePos = storage->loadJsonLine();
+		storage.initFilePos = storage.loadJsonLine();
 //		DEBUG_RAM("LoadJSONline");
-		if (storage->initFilePos == -1)
+		if (storage.initFilePos == -1)
 		{
 			DEBUG_PRINTT(F("Error leyendo pos_i"));
 		}
